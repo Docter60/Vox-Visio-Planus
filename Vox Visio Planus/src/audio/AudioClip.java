@@ -4,13 +4,6 @@
 package audio;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  * @author Docter60
@@ -18,17 +11,18 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class AudioClip {
 
-	private Clip clip;
+	private File audioFile;
 	
-	public AudioClip(String file){
-		try {
-			AudioInputStream ais = AudioSystem.getAudioInputStream(new File(file));
-			this.clip = AudioSystem.getClip();
-			clip.open(ais);
-		} catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-			System.err.println("Could not create AudioClip:" + file);
-		}
+	public AudioClip(String filePath){
+		
+		File temporaryFile = new File(filePath);
+		if(temporaryFile.exists() && !temporaryFile.isDirectory())
+			this.audioFile = temporaryFile;
+		//eventually check if the file ends in a supported format
+	}
+	
+	public File getAudioFile(){
+		return this.audioFile;
 	}
 	
 }

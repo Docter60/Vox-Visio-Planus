@@ -6,6 +6,7 @@ package core;
 import java.awt.Point;
 
 import audio.AudioClip;
+import audio.AudioPlayer;
 import entity.LineMesh;
 import math.Position;
 import math.Vector2;
@@ -18,10 +19,13 @@ public class VoxVisioPlanus {
 
 	public static final int POINT_COUNT = 500;
 	
+	public static final String LAPTOP_SAMPLE = "C:\\Users\\Docter60\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.mp3";
+	
 	private MainWindow mainWindow;
 	private Renderer renderer;
 	
 	private LineMesh mesh;
+	private AudioPlayer player;
 	private AudioClip clip;
 	
 	public VoxVisioPlanus(){
@@ -29,8 +33,9 @@ public class VoxVisioPlanus {
 		renderer = new Renderer(mainWindow);
 		mesh = new LineMesh(new Position(0, 0), new Vector2(0, 0), 1);
 		generateLineMesh();
-		//clip = new AudioClip("C:\\Users\\Docte\\Desktop\\Test Folder\\04 The Dive Game.wav");
-		
+		clip = new AudioClip(LAPTOP_SAMPLE);
+		player = new AudioPlayer(clip);
+		player.play(); //TODO threading and media player
 		while(true){
 			renderer.addToRenderingQueue(mesh);
 			generateLineMesh();
