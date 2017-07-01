@@ -38,6 +38,10 @@ public class LineMesh extends Element{
 		points.remove(points.size() - 1);
 	}
 	
+	public void clearPointList(){
+		points.clear();
+	}
+	
 	@Override
 	public void draw(Graphics2D g) {
 		// TODO doesn't account for transform

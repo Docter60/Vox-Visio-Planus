@@ -3,6 +3,7 @@
  */
 package core;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
@@ -31,17 +32,19 @@ public class Renderer {
 	}
 	
 	public void render(){
-		
 		do{
 			Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+			g.translate(mainWindow.getInsets().left, mainWindow.getInsets().top);
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, mainWindow.getContentPane().getWidth(), mainWindow.getContentPane().getHeight());
 			try{
-				g.fillRect(0, 0, mainWindow.getWidth(), mainWindow.getHeight());
 				for(Drawable drawable : drawables)
 					drawable.draw(g);
 			}finally{
 				g.dispose();
 			}
 			bs.show();
+			clearRenderingQueue();
 		}while(bs.contentsLost());
 	}
 	

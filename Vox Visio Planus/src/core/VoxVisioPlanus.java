@@ -5,6 +5,7 @@ package core;
 
 import java.awt.Point;
 
+import audio.AudioClip;
 import entity.LineMesh;
 import math.Position;
 import math.Vector2;
@@ -15,29 +16,33 @@ import math.Vector2;
  */
 public class VoxVisioPlanus {
 
-	public static final int POINT_COUNT = 100;
+	public static final int POINT_COUNT = 500;
 	
 	private MainWindow mainWindow;
 	private Renderer renderer;
 	
 	private LineMesh mesh;
+	private AudioClip clip;
 	
 	public VoxVisioPlanus(){
 		mainWindow = new MainWindow("Vox Visio Planus");
 		renderer = new Renderer(mainWindow);
 		mesh = new LineMesh(new Position(0, 0), new Vector2(0, 0), 1);
 		generateLineMesh();
-		renderer.addToRenderingQueue(mesh);
+		//clip = new AudioClip("C:\\Users\\Docte\\Desktop\\Test Folder\\04 The Dive Game.wav");
+		
 		while(true){
+			renderer.addToRenderingQueue(mesh);
+			generateLineMesh();
 			renderer.render();
+			mesh.clearPointList();
 		}
-		//renderer.render();
 	}
 	
 	public void generateLineMesh(){
 		for(int i = 0; i < POINT_COUNT; i++){
-			int x = i * (mainWindow.getContentPane().getWidth() / POINT_COUNT);
-			int y = (int) (Math.random() * mainWindow.getHeight());
+			int x = (int) (i * ((float) mainWindow.getContentPane().getWidth() / (float) POINT_COUNT));
+			int y = (int) (Math.random() * mainWindow.getContentPane().getHeight());
 			mesh.addPoint(new Point(x, y));
 		}
 	}
