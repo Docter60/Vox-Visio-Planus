@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.geom.Line2D;
 
 import core.MainWindow;
+import core.VoxVisioPlanus;
 import math.Position;
 import math.Vector2;
 
@@ -16,16 +17,17 @@ import math.Vector2;
  * @author Docter60
  *
  */
-public class LineMesh extends Element{
-
-	private MainWindow window;
+public class BarMesh extends Element{
+	
 	private Point[] points;
-
-	public LineMesh(MainWindow window, Position position, Vector2 rotation, double scale, int size) {
+	private MainWindow window;
+	
+	public BarMesh(MainWindow window, Position position, Vector2 rotation, double scale, int size){
 		super(position, rotation, scale);
 		points = new Point[size];
 		for(int i = 0; i < points.length; i++)
-			points[i] = new Point(0, 0);
+			points[i] = new Point(0, window.getHeight());
+		this.window = window;
 	}
 	
 	public void setPoint(int index, Point point){
@@ -38,7 +40,6 @@ public class LineMesh extends Element{
 	
 	@Override
 	public void draw(Graphics2D g) {
-		// TODO doesn't account for transform
 		g.setColor(Color.WHITE);
 		for(int i = 0; i < points.length; i++){
 			if(i + 1 == points.length) return;
@@ -46,10 +47,11 @@ public class LineMesh extends Element{
 			double y1 = points[i].getY();
 			double x2 = points[i + 1].getX();
 			double y2 = points[i + 1].getY();
-
-			Line2D line = new Line2D.Double(x1, y1, x2, y2);
-			g.draw(line);
+			
+			g.setColor(Color.GREEN);
+			g.fillRect((int) x1, (int) y1, (int) (x2 - x1), (int) (window.getHeight() - y1));
+			g.setColor(Color.BLACK);
+			g.drawRect((int) x1, (int) y1, (int) (x2 - x1), (int) (window.getHeight() - y1));
 		}
 	}
-	
 }

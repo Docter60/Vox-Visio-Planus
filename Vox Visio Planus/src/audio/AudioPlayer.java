@@ -3,82 +3,54 @@
  */
 package audio;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.Line.Info;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Port;
-
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
+import asset.AudioSpectrum;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * @author Docter60
  *
  */
-public class AudioPlayer implements Runnable{
+public class AudioPlayer {
 
-	private Player player;
+	private MediaPlayer mediaPlayer;
+	private AudioSpectrum audioSpectrum;
 	private AudioClip clip;
-	//private AudioPlaylist playlist;
 	
-	public AudioPlayer(AudioClip clip){
+	public AudioPlayer(){}
+	
+	public void attachAudioClip(AudioClip clip){
 		this.clip = clip;
-		try {
-			FileInputStream fis = new FileInputStream(clip.getAudioFile());
-			this.player = new Player(fis);
-		} catch (FileNotFoundException | JavaLayerException e) {
-			e.printStackTrace();
-		}
+		mediaPlayer = new MediaPlayer(clip.getMedia());
+		audioSpectrum = new AudioSpectrum(this);
+		mediaPlayer.setAudioSpectrumListener(audioSpectrum);
+		mediaPlayer.setAudioSpectrumInterval(0.001);
+		System.out.println(mediaPlayer.getAudioSpectrumNumBands());
+		mediaPlayer.setAudioSpectrumThreshold(-70);
+		mediaPlayer.setAudioSpectrumNumBands(1024);
 	}
 	
 	public void play(){
-		if(isPlayerReady())
-			try {
-				player.play();
-			} catch (JavaLayerException e) {
-				e.printStackTrace();
-			}
+		mediaPlayer.play();
 	}
 	
-	//TODO: add all other functions
-	
-	public void setVolume(float volume){
-		Info source = Port.Info.SPEAKER;
-		
-		if(AudioSystem.isLineSupported(source)){
-			try{
-				Port outline = (Port) AudioSystem.getLine(source);
-				outline.open();
-				FloatControl volumeControl = (FloatControl) outline.getControl(FloatControl.Type.VOLUME);
-				volumeControl.setValue(volume);
-			}catch(LineUnavailableException e){
-				e.printStackTrace();
-			}
-		}
+	public void pause(){
+		mediaPlayer.pause();
 	}
 	
-	public boolean isPlayerReady(){
-		if(clip.getAudioFile() == null)
-			return false;
-		return true;
+	public void setVolume(double volume){
+		mediaPlayer.setVolume(volume);
 	}
 	
-	public void setClip(AudioClip clip){
-		this.clip = clip;
+	public AudioClip getCurrentClip(){
+		return clip;
 	}
 	
-	@Override
-	public void run() {
-		try {
-			player.play();
-		} catch (JavaLayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public MediaPlayer getMediaPlayer(){
+		return mediaPlayer;
 	}
 	
+	public AudioSpectrum getAudioSpectrum(){
+		return audioSpectrum;
+	}
+
 }
