@@ -15,7 +15,7 @@ public class AudioSpectrum implements AudioSpectrumListener{
 	private float[] spectrumData;
 	
 	public AudioSpectrum(AudioPlayer player){
-		spectrumData = new float[1024];
+		spectrumData = new float[128];
 	}
 	
 	public float[] getSpectrumData(){

@@ -48,10 +48,16 @@ public class BarMesh extends Element{
 			double x2 = points[i + 1].getX();
 			double y2 = points[i + 1].getY();
 			
-			g.setColor(Color.GREEN);
-			g.fillRect((int) x1, (int) y1, (int) (x2 - x1), (int) (window.getHeight() - y1));
+			int x = (int) x1;
+			int y = (int) y1 - 10;
+			int width = (int) (x2 - x1);
+			int height = (int) (window.getContentPane().getHeight() - y1);
+			
+			Color c = new Color(255 - i, 128 + i, 128 - i);
+			g.setColor(c);
+			g.fillRect(x, y, width, height);
 			g.setColor(Color.BLACK);
-			g.drawRect((int) x1, (int) y1, (int) (x2 - x1), (int) (window.getHeight() - y1));
+			g.drawRect(x, y, width, height);
 		}
 	}
 }

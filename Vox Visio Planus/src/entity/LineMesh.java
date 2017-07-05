@@ -6,7 +6,9 @@ package entity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.QuadCurve2D;
 
 import core.MainWindow;
 import math.Position;
@@ -49,6 +51,13 @@ public class LineMesh extends Element{
 
 			Line2D line = new Line2D.Double(x1, y1, x2, y2);
 			g.draw(line);
+			
+//			QuadCurve2D q = new QuadCurve2D.Double();
+//			q.setCurve(x1, y1, 0.5 * (x1 + x2), 0.5 * (y1 + y2) - 10, x2, y2);
+//			g.draw(q);
+			
+//			Ellipse2D e = new Ellipse2D.Double(360, 270, 270 - y1, 270 - y1);
+//			g.draw(e);
 		}
 	}
 	
