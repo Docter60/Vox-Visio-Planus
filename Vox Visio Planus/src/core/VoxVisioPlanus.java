@@ -3,17 +3,15 @@
  */
 package core;
 
-import java.awt.Point;
-
 import javafx.embed.swing.JFXPanel;
 
 import audio.AudioClip;
 import audio.AudioPlayer;
 import entity.BarMesh;
+import entity.BarMesh2;
 import entity.LineMesh;
 import input.Key;
 import input.Keyboard;
-import math.Mathg;
 import math.Position;
 import math.Vector2;
 
@@ -36,6 +34,7 @@ public class VoxVisioPlanus {
 	
 	private LineMesh lineMesh;
 	private BarMesh barMesh;
+	private BarMesh2 barMesh2;
 	private AudioPlayer player;
 	private AudioClip clip;
 	
@@ -45,18 +44,24 @@ public class VoxVisioPlanus {
 		renderer = new Renderer(mainWindow);
 		lineMesh = new LineMesh(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
 		barMesh = new BarMesh(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
+		barMesh2 = new BarMesh2(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
 
 		
 		//creating a thread for the media player
-		clip = new AudioClip(LAPTOP_SAMPLE);
+		clip = new AudioClip(DESKTOP_SAMPLE);
 		player = new AudioPlayer();
 		player.attachAudioClip(clip);
 		
 		while(true){
-			//renderer.addToRenderingQueue(lineMesh);
-			renderer.addToRenderingQueue(barMesh);
-			//generateLineMesh();
-			generateBarMesh();
+			renderer.addToRenderingQueue(lineMesh);
+			lineMesh.generateLineMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
+			
+//			renderer.addToRenderingQueue(barMesh);
+//			barMesh.generateBarMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
+			
+			renderer.addToRenderingQueue(barMesh2);
+			barMesh2.generateBarMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
+			
 			renderer.render();
 			
 			if(Keyboard.keyIsPulsed(Key.K)) player.pause();
@@ -72,35 +77,6 @@ public class VoxVisioPlanus {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-	}
-	
-	public void generateLineMesh(){
-		float[] spectrumData = player.getData();
-		for(int i = 0; i < POINT_COUNT; i++){
-			int x = (int) (i * ((float) mainWindow.getContentPane().getWidth() / (float) POINT_COUNT));
-			double y = (mainWindow.getHeight()) - ((spectrumData[i]) * 20);
-			
-			Point oldPoint = lineMesh.getPoint(i);
-			//System.out.println(oldPoint);
-			
-			int lerpY = (int) Mathg.lerp(oldPoint.getY(), y, 0.08);
-			
-			lineMesh.setPoint(i, new Point(x, lerpY));
-		}
-	}
-	
-	public void generateBarMesh(){
-		float[] spectrumData = player.getData();
-		for(int i = 0; i < POINT_COUNT; i++){
-			int x = (int) (i * ((float) mainWindow.getContentPane().getWidth() / (float) POINT_COUNT));
-			double y = (mainWindow.getHeight()) - ((spectrumData[i] * 20));
-			Point oldPoint = barMesh.getPoint(i);
-			//System.out.println(oldPoint);
-			
-			int lerpY = (int) Mathg.lerp(oldPoint.getY(), y, 0.08);
-			
-			barMesh.setPoint(i, new Point(x, lerpY));
 		}
 	}
 	

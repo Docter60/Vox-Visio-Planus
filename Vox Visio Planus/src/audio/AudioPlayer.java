@@ -5,7 +5,6 @@ package audio;
 
 import asset.AudioSpectrum;
 import javafx.scene.media.MediaPlayer;
-import javafx.animation.Timeline;
 
 /**
  * @author Docter60
@@ -22,17 +21,11 @@ public class AudioPlayer {
 	
 	public void attachAudioClip(AudioClip clip){
 		this.clip = clip;
-		data = new float[128];
 		mediaPlayer = new MediaPlayer(clip.getMedia());
-		mediaPlayer.setAudioSpectrumListener((double d, double d1, float[] magnitudes,
-				float[] phases) -> {
-					for(int i = 0; i < data.length; i++){
-						data[i] = (float) (magnitudes[i] + 60);
-					}
-				});
-		mediaPlayer.setAudioSpectrumInterval(0.01);
-		mediaPlayer.setAudioSpectrumNumBands(128);
-		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+		this.data = new float[mediaPlayer.getAudioSpectrumNumBands()];
+		audioSpectrum = new AudioSpectrum(mediaPlayer, data);
+		mediaPlayer.setAudioSpectrumListener(audioSpectrum);
+		mediaPlayer.setAudioSpectrumInterval(0.02);
 	}
 	
 	public void play(){
@@ -59,7 +52,7 @@ public class AudioPlayer {
 		return audioSpectrum;
 	}
 	
-	public float[] getData(){
+	public float[] getSpectrumData(){
 		return data;
 	}
 
