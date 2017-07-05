@@ -1,7 +1,7 @@
 /**
  * 
  */
-package asset;
+package audio;
 
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.MediaPlayer;

@@ -3,7 +3,6 @@
  */
 package audio;
 
-import asset.AudioSpectrum;
 import javafx.scene.media.MediaPlayer;
 
 /**
@@ -22,10 +21,11 @@ public class AudioPlayer {
 	public void attachAudioClip(AudioClip clip){
 		this.clip = clip;
 		mediaPlayer = new MediaPlayer(clip.getMedia());
+		mediaPlayer.setAudioSpectrumInterval(0.01);
 		this.data = new float[mediaPlayer.getAudioSpectrumNumBands()];
 		audioSpectrum = new AudioSpectrum(mediaPlayer, data);
 		mediaPlayer.setAudioSpectrumListener(audioSpectrum);
-		mediaPlayer.setAudioSpectrumInterval(0.02);
+		mediaPlayer.setAudioSpectrumNumBands(256);
 	}
 	
 	public void play(){

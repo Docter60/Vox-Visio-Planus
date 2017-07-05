@@ -16,8 +16,8 @@ public class Mouse implements MouseListener{
 
 	private boolean leftClick;
 	private boolean rightClick;
-	private boolean leftDown;
-	private boolean rightDown;
+//	private boolean leftDown;
+//	private boolean rightDown;
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
