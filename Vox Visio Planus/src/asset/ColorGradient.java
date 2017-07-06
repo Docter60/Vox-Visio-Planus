@@ -25,6 +25,16 @@ public class ColorGradient {
 			System.err.println("Node index out of range!");
 	}
 	
+	public void configureRainbowGradient(){
+		addNode(Color.RED);
+		addNode(Color.ORANGE);
+		addNode(Color.YELLOW);
+		addNode(Color.GREEN);
+		addNode(Color.CYAN);
+		addNode(Color.BLUE);
+		addNode(Color.MAGENTA);
+	}
+	
 	public Color getColor(float lerp_t){
 		if(lerp_t > 1){
 			System.err.println("lerp_t cannot be more than 1!");

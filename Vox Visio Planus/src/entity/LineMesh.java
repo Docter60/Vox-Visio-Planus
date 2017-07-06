@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 
+import asset.ColorGradient;
 import core.MainWindow;
 import math.Mathg;
 import math.Position;
@@ -20,12 +21,15 @@ import math.Vector2;
 public class LineMesh extends Element{
 
 	private Point[] points;
+	private ColorGradient cg;
 
 	public LineMesh(MainWindow window, Position position, Vector2 rotation, double scale, int size) {
 		super(position, rotation, scale);
 		points = new Point[size];
 		for(int i = 0; i < points.length; i++)
 			points[i] = new Point(0, window.getContentPane().getHeight());
+		this.cg = new ColorGradient();
+		this.cg.configureRainbowGradient();
 	}
 	
 	public void setPoint(int index, Point point){
@@ -57,7 +61,7 @@ public class LineMesh extends Element{
 			double x2 = points[i + 1].getX();
 			double y2 = points[i + 1].getY();
 
-			Color c = new Color(255 - i, 128 + i, 128 - i);
+			Color c = cg.getColor((float) i / (float) points.length);
 			g.setColor(c);
 			Line2D line = new Line2D.Double(x1, y1, x2, y2);
 			g.draw(line);

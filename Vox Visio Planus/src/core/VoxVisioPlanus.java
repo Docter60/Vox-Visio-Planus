@@ -7,7 +7,6 @@ import javafx.embed.swing.JFXPanel;
 
 import audio.AudioClip;
 import audio.AudioPlayer;
-import entity.BarMesh;
 import entity.BarMesh2;
 import entity.LineMesh;
 import input.Key;
@@ -33,7 +32,6 @@ public class VoxVisioPlanus {
 	private Renderer renderer;
 	
 	private LineMesh lineMesh;
-	private BarMesh barMesh;
 	private BarMesh2 barMesh2;
 	private AudioPlayer player;
 	private AudioClip clip;
@@ -43,21 +41,18 @@ public class VoxVisioPlanus {
 		mainWindow.addKeyListener(new Keyboard());
 		renderer = new Renderer(mainWindow);
 		lineMesh = new LineMesh(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
-		barMesh = new BarMesh(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
 		barMesh2 = new BarMesh2(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
-
 		
-		//creating a thread for the media player
+		//initialization of media stuff
 		clip = new AudioClip(DESKTOP_SAMPLE);
 		player = new AudioPlayer();
 		player.attachAudioClip(clip);
-		
+	}
+	
+	public void loop(){
 		while(true){
 			renderer.addToRenderingQueue(lineMesh);
 			lineMesh.generateLineMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
-			
-//			renderer.addToRenderingQueue(barMesh);
-//			barMesh.generateBarMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
 			
 			renderer.addToRenderingQueue(barMesh2);
 			barMesh2.generateBarMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
@@ -74,18 +69,14 @@ public class VoxVisioPlanus {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	public AudioPlayer getAudioPlayer(){
-		return player;
-	}
-	
 	public static void main(String[] args) {
 		VoxVisioPlanus voxVisioPlanus = new VoxVisioPlanus();
+		voxVisioPlanus.loop();
 	}
 
 }
