@@ -1,6 +1,6 @@
 package asset;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +45,12 @@ public class ColorGradient {
 		int index = (int) Math.floor((float) nodes.size() * lerp_t);
 		float nodeLerp_t = (lerp_t - index * nodeSpread) * nodes.size();
 		
-		int r1 = nodes.get(index).getRed();
-		int g1 = nodes.get(index).getGreen();
-		int b1 = nodes.get(index).getBlue();
-		int r2;
-		int g2;
-		int b2;
+		double r1 = nodes.get(index).getRed();
+		double g1 = nodes.get(index).getGreen();
+		double b1 = nodes.get(index).getBlue();
+		double r2;
+		double g2;
+		double b2;
 		
 		if(index + 1 < nodes.size()){
 			r2 = nodes.get(index + 1).getRed();
@@ -62,11 +62,11 @@ public class ColorGradient {
 			b2 = b1;
 		}
 		
-		int r = (int) Mathg.lerp(r1, r2, nodeLerp_t);
-		int g = (int) Mathg.lerp(g1, g2, nodeLerp_t);
-		int b = (int) Mathg.lerp(b1, b2, nodeLerp_t);
+		double r = Mathg.lerp(r1, r2, nodeLerp_t);
+		double g = Mathg.lerp(g1, g2, nodeLerp_t);
+		double b = Mathg.lerp(b1, b2, nodeLerp_t);
 		
-		return new Color(r, g, b);
+		return new Color(r, g, b, 1.0);
 	}
 	
 }

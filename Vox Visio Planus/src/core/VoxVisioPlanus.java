@@ -3,80 +3,109 @@
  */
 package core;
 
-import javafx.embed.swing.JFXPanel;
-
-import audio.AudioClip;
-import audio.AudioPlayer;
-import entity.BarMesh2;
-import entity.LineMesh;
+import audio.VoxPlayer;
 import input.Key;
 import input.Keyboard;
-import math.Position;
-import math.Vector2;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import object.visualSpectrum.BarSpectrum;
+import object.visualSpectrum.LinearSpectrum;
 
 /**
  * @author Docter60
  *
  */
-public class VoxVisioPlanus {
-
-	public static final int POINT_COUNT = 128;
-	
+public class VoxVisioPlanus extends Application{
+	public static final String DESKTOP_SAMPLE = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.m4a";
+	public static final String DESKTOP_SAMPLE2 = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\The Chainsmokers\\Memories...Do Not Open\\05 Something Just Like This.m4a";
 	public static final String LAPTOP_SAMPLE = "C:\\Users\\Docter60\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.m4a";
-	public static final String LAPTOP_SAMPLE2 = "C:\\Users\\Docter60\\Music\\Dance Music\\305.mp3";
-	public static final String DESKTOP_SAMPLE = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.mp3";
+	public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
+	public static final int STAGE_WIDTH = (int) SCREEN_BOUNDS.getWidth() / 2;
+	public static final int STAGE_HEIGHT = (int) SCREEN_BOUNDS.getHeight() / 2;
 	
-	public static final JFXPanel fxPanel = new JFXPanel();
+	private VoxPlayer voxPlayer;
+	private BarSpectrum barSpectrum;
+	private LinearSpectrum linearSpectrum;
 	
-	private MainWindow mainWindow;
-	private Renderer renderer;
-	
-	private LineMesh lineMesh;
-	private BarMesh2 barMesh2;
-	private AudioPlayer player;
-	private AudioClip clip;
-	
-	public VoxVisioPlanus(){
-		mainWindow = new MainWindow("Vox Visio Planus");
-		mainWindow.addKeyListener(new Keyboard());
-		renderer = new Renderer(mainWindow);
-		lineMesh = new LineMesh(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
-		barMesh2 = new BarMesh2(mainWindow, new Position(0, 0), new Vector2(0, 0), 1, POINT_COUNT);
-		
-		//initialization of media stuff
-		clip = new AudioClip(DESKTOP_SAMPLE);
-		player = new AudioPlayer();
-		player.attachAudioClip(clip);
-	}
-	
-	public void loop(){
-		while(true){
-			renderer.addToRenderingQueue(lineMesh);
-			lineMesh.generateLineMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
-			
-			renderer.addToRenderingQueue(barMesh2);
-			barMesh2.generateBarMesh(mainWindow.getWidth(), mainWindow.getHeight(), player.getSpectrumData());
-			
-			renderer.render();
-			
-			if(Keyboard.keyIsPulsed(Key.K)) player.pause();
-			
-			if(Keyboard.keyIsPulsed(Key.L)) player.play();
-			
-			if(Keyboard.keyIsPulsed(Key.ESC)) System.exit(0);
-			
-			Keyboard.clearkeyPulse();
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	public static void main(String[] args) {
-		VoxVisioPlanus voxVisioPlanus = new VoxVisioPlanus();
-		voxVisioPlanus.loop();
+	public static void main(String[] args){
+		launch(args);
 	}
 
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		////////////////////////////////////////////////////
+		//           Setting up the foundation            //
+		////////////////////////////////////////////////////
+		
+		primaryStage.setTitle("Vox Visio Planus");
+		primaryStage.setX(STAGE_WIDTH / 2);
+		primaryStage.setY(STAGE_HEIGHT / 2);
+		Group root = new Group();
+		Scene scene = new Scene(root, STAGE_WIDTH, STAGE_HEIGHT, Color.BLACK);
+		primaryStage.setScene(scene);
+		
+		voxPlayer = new VoxPlayer();
+		voxPlayer.load(DESKTOP_SAMPLE);
+		voxPlayer.setVolume(0.8);
+		voxPlayer.play();
+		
+		barSpectrum = new BarSpectrum(scene.getWidth(), scene.getHeight(), 128);
+		root.getChildren().add(barSpectrum.getBars());
+		
+		linearSpectrum = new LinearSpectrum(scene.getWidth(), scene.getHeight(), 128);
+		root.getChildren().add(linearSpectrum.getLines());
+		
+		//Renderer renderer = new Renderer(root);  // Renderer class isn't needed right now
+		
+		//Listening to window resize events
+		primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {setWidth(newVal.doubleValue());});
+		primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {setHeight(newVal.doubleValue());});
+		
+		////////////////////////////////////////////////////
+		//                     Loop                       //
+		////////////////////////////////////////////////////
+		Timeline loop = new Timeline();
+		loop.setCycleCount(Timeline.INDEFINITE);
+		
+		//final long timeStart = System.currentTimeMillis();
+		
+		KeyFrame kf = new KeyFrame(
+				Duration.seconds(0.01), 
+				new EventHandler<ActionEvent>()
+				{
+					public void handle(ActionEvent ae)
+					{
+						barSpectrum.setBarHeights(voxPlayer.getSpectrumData());
+						//linearSpectrum.setLineNodeHeights(voxPlayer.getSpectrumData());
+						
+						if(Keyboard.keyIsPressed(Key.ESC)) System.exit(0); // Doesn't work.  Need to use javafx methods
+					}
+				});
+		
+		////////////////////////////////////////////////////
+		
+		loop.getKeyFrames().add(kf);
+		loop.play();
+		
+		primaryStage.show();
+	}
+	
+	public void setWidth(double width){
+		barSpectrum.setWindowWidth(width);
+	}
+	
+	public void setHeight(double height){
+		barSpectrum.setMiddleY(height / 2.0);
+	}
+	
 }
