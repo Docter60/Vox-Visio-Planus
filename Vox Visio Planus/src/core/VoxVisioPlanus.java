@@ -56,11 +56,11 @@ public class VoxVisioPlanus extends Application{
 		
 		voxPlayer = new VoxPlayer();
 		voxPlayer.load(DESKTOP_SAMPLE);
-		voxPlayer.setVolume(0.8);
+		voxPlayer.setVolume(0.4);
 		voxPlayer.play();
 		
-		barSpectrum = new BarSpectrum(scene.getWidth(), scene.getHeight(), 128);
-		root.getChildren().add(barSpectrum.getBars());
+		barSpectrum = new BarSpectrum(128, scene, voxPlayer.getSpectrumData());
+		root.getChildren().add(barSpectrum.getElements());
 		
 		linearSpectrum = new LinearSpectrum(scene.getWidth(), scene.getHeight(), 128);
 		root.getChildren().add(linearSpectrum.getLines());
@@ -85,8 +85,7 @@ public class VoxVisioPlanus extends Application{
 				{
 					public void handle(ActionEvent ae)
 					{
-						barSpectrum.setBarHeights(voxPlayer.getSpectrumData());
-						//linearSpectrum.setLineNodeHeights(voxPlayer.getSpectrumData());
+						barSpectrum.updateNodes();
 						
 						if(Keyboard.keyIsPressed(Key.ESC)) System.exit(0); // Doesn't work.  Need to use javafx methods
 					}
@@ -101,11 +100,11 @@ public class VoxVisioPlanus extends Application{
 	}
 	
 	public void setWidth(double width){
-		barSpectrum.setWindowWidth(width);
+		barSpectrum.setSceneWidth(width);
 	}
 	
 	public void setHeight(double height){
-		barSpectrum.setMiddleY(height / 2.0);
+		barSpectrum.setSceneHeight(height);
 	}
 	
 }
