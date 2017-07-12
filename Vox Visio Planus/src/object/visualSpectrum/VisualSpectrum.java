@@ -3,7 +3,7 @@
  */
 package object.visualSpectrum;
 
-import asset.ColorGradient;
+import asset.EffectsKit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -19,7 +19,7 @@ public abstract class VisualSpectrum {
 	protected int elementCount;
 	protected Scene sceneReference;
 	protected float[] dataReference;
-	protected ColorGradient cg;
+	protected EffectsKit ek;
 	
 	protected double sceneWidth;
 	protected double sceneHeight;
@@ -29,7 +29,7 @@ public abstract class VisualSpectrum {
 		this.elementCount = elementCount;
 		this.sceneReference = sceneReference;
 		this.dataReference = dataReference;
-		this.cg = new ColorGradient();
+		this.ek = new EffectsKit(elements);
 		
 		this.sceneWidth = sceneReference.getWidth();
 		this.sceneHeight = sceneReference.getHeight();
@@ -53,13 +53,9 @@ public abstract class VisualSpectrum {
 		this.sceneHeight = sceneHeight;
 		resizeUpdate();
 	}
-
-	public ColorGradient getCg() {
-		return cg;
-	}
-
-	public void setCg(ColorGradient cg) {
-		this.cg = cg;
+	
+	public EffectsKit getEffectsKit(){
+		return this.ek;
 	}
 
 	public Group getElements() {

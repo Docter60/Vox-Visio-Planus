@@ -23,84 +23,88 @@ import object.visualSpectrum.LinearSpectrum;
  * @author Docter60
  *
  */
-public class VoxVisioPlanus extends Application{
+public class VoxVisioPlanus extends Application {
 	public static final String DESKTOP_SAMPLE = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.m4a";
 	public static final String DESKTOP_SAMPLE2 = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\The Chainsmokers\\Memories...Do Not Open\\05 Something Just Like This.m4a";
 	public static final String LAPTOP_SAMPLE = "C:\\Users\\Docter60\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.m4a";
 	public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
 	public static final int STAGE_WIDTH = (int) SCREEN_BOUNDS.getWidth() / 2;
 	public static final int STAGE_HEIGHT = (int) SCREEN_BOUNDS.getHeight() / 2;
-	
+
 	private VoxPlayer voxPlayer;
 	private BarSpectrum barSpectrum;
 	private LinearSpectrum linearSpectrum;
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		////////////////////////////////////////////////////
-		//           Setting up the foundation            //
+		// Setting up the foundation //
 		////////////////////////////////////////////////////
-		
+
 		primaryStage.setTitle("Vox Visio Planus");
 		primaryStage.setX(STAGE_WIDTH / 2);
 		primaryStage.setY(STAGE_HEIGHT / 2);
 		Group root = new Group();
 		Scene scene = new Scene(root, STAGE_WIDTH, STAGE_HEIGHT, Color.BLACK);
 		primaryStage.setScene(scene);
-		
+
 		voxPlayer = new VoxPlayer();
 		voxPlayer.load(LAPTOP_SAMPLE);
 		voxPlayer.setVolume(0.4);
 		voxPlayer.play();
-		
+
 		barSpectrum = new BarSpectrum(128, scene, voxPlayer.getSpectrumData());
+		barSpectrum.getEffectsKit().setFillRainbow();
+		barSpectrum.getEffectsKit().setGlow(1.0);
 		root.getChildren().add(barSpectrum.getElements());
-		
+
 		linearSpectrum = new LinearSpectrum(128, scene, voxPlayer.getSpectrumData());
+		linearSpectrum.getEffectsKit().setStrokeRainbow();
+		linearSpectrum.getEffectsKit().setGlow(1.0);
 		root.getChildren().add(linearSpectrum.getElements());
-		
-		//Listening to window resize events
-		primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {setWidth(newVal.doubleValue());});
-		primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {setHeight(newVal.doubleValue());});
-		
+
+		// Listening to window resize events
+		primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+			setWidth(newVal.doubleValue());
+		});
+		primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+			setHeight(newVal.doubleValue());
+		});
+
 		////////////////////////////////////////////////////
-		//                     Loop                       //
+		// Loop //
 		////////////////////////////////////////////////////
 		Timeline loop = new Timeline();
 		loop.setCycleCount(Timeline.INDEFINITE);
-		
-		KeyFrame kf = new KeyFrame(
-				Duration.seconds(0.01), 
-				new EventHandler<ActionEvent>()
-				{
-					public void handle(ActionEvent ae)
-					{
-						barSpectrum.updateNodes();
-						linearSpectrum.updateNodes();
-						//if(Keyboard.keyIsPressed(Key.ESC)) System.exit(0); // Doesn't work.  Need to use javafx methods
-					}
-				});
-		
+
+		KeyFrame kf = new KeyFrame(Duration.seconds(0.01), new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				barSpectrum.updateNodes();
+				linearSpectrum.updateNodes();
+				// if(Keyboard.keyIsPressed(Key.ESC)) System.exit(0); // Doesn't work. Need to use javafx methods
+			}
+		});
+
 		////////////////////////////////////////////////////
-		
+
 		loop.getKeyFrames().add(kf);
 		loop.play();
-		
+
 		primaryStage.show();
 	}
-	
-	public void setWidth(double width){
+
+	public void setWidth(double width) {
 		barSpectrum.setSceneWidth(width);
 		linearSpectrum.setSceneWidth(width);
 	}
-	
-	public void setHeight(double height){
+
+	public void setHeight(double height) {
 		barSpectrum.setSceneHeight(height);
 		linearSpectrum.setSceneHeight(height);
 	}
-	
+
 }

@@ -5,7 +5,6 @@ package object.visualSpectrum;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.effect.Glow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import math.Mathg;
@@ -19,22 +18,15 @@ public class LinearSpectrum extends VisualSpectrum {
 	public LinearSpectrum(int lineNodeCount, Scene sceneReference, float[] dataReference) {
 		super(lineNodeCount, sceneReference, dataReference);
 
-		cg.configureRainbowGradient();
-
 		double lineNodeSpread = sceneWidth / (double) lineNodeCount;
 
 		for (int i = 0; i < lineNodeCount - 1; i++) {
 			double x1 = (double) i * lineNodeSpread;
 			double x2 = (double) (i + 1) * lineNodeSpread;
-
 			Line line = new Line(x1, sceneHeight, x2, sceneHeight);
-
-			Color c = cg.getColor(i / (float) lineNodeCount);
-			line.setStroke(c);
-
+			line.setStroke(Color.GRAY);
 			elements.getChildren().add(line);
 		}
-		elements.setEffect(new Glow(1.0));
 	}
 
 	@Override

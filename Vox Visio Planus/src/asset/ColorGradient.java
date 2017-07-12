@@ -12,6 +12,8 @@ public class ColorGradient {
 	
 	public ColorGradient(){
 		this.nodes = new ArrayList<Color>();
+		this.addNode(Color.GRAY);
+		this.addNode(Color.GRAY);
 	}
 	
 	public void addNode(Color color){
@@ -25,14 +27,8 @@ public class ColorGradient {
 			System.err.println("Node index out of range!");
 	}
 	
-	public void configureRainbowGradient(){
-		addNode(Color.RED);
-		addNode(Color.ORANGE);
-		addNode(Color.YELLOW);
-		addNode(Color.GREEN);
-		addNode(Color.CYAN);
-		addNode(Color.BLUE);
-		addNode(Color.MAGENTA);
+	public void clearNodes(){
+		nodes.clear();
 	}
 	
 	public Color getColor(float lerp_t){
@@ -67,6 +63,17 @@ public class ColorGradient {
 		double b = Mathg.lerp(b1, b2, nodeLerp_t);
 		
 		return new Color(r, g, b, 1.0);
+	}
+	
+	public void configureRainbowGradient(){
+		clearNodes();
+		addNode(Color.RED);
+		addNode(Color.ORANGE);
+		addNode(Color.YELLOW);
+		addNode(Color.GREEN);
+		addNode(Color.CYAN);
+		addNode(Color.BLUE);
+		addNode(Color.MAGENTA);
 	}
 	
 }
