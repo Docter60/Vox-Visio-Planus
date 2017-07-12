@@ -27,7 +27,6 @@ public class BarSpectrum extends VisualSpectrum{
 		for (int i = 0; i < barCount; i++) {
 			double x = (double) i * barWidth;
 
-			//TODO use constructor instead of setters
 			Rectangle r = new Rectangle(x, sceneHeight / 2.0, barWidth, 0);
 			
 			Color c = cg.getColor(i / (float) barCount);
@@ -38,6 +37,7 @@ public class BarSpectrum extends VisualSpectrum{
 		elements.setEffect(new Glow(1.0));
 	}
 
+	@Override
 	public void updateNodes() {
 		for (int i = 0; i < elements.getChildren().size(); i++) {
 			Node node = elements.getChildren().get(i);
@@ -51,6 +51,7 @@ public class BarSpectrum extends VisualSpectrum{
 		}
 	}
 	
+	@Override
 	public void resizeUpdate(){
 		double barCount = elements.getChildren().size();
 		double barWidth = sceneWidth / barCount;

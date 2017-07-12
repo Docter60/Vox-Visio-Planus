@@ -3,53 +3,51 @@
  */
 package object.visualSpectrum;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.effect.Glow;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import math.Mathg;
 
 /**
  * @author Docter60
  *
  */
-public class LinearSpectrum {
+public class LinearSpectrum extends VisualSpectrum{
 	
-	private Group lines;
-	private double middleY;
-	private double screenHeight;
-	
-	public LinearSpectrum(double width, double height, int lineNodeCount){
-		this.lines = new Group();
+	public LinearSpectrum(int lineNodeCount, Scene sceneReference, float[] dataReference){
+		super(lineNodeCount, sceneReference, dataReference);
 		
-		double lineNodeSpread = width / (double) lineNodeCount;
-		this.screenHeight = height;
-		this.middleY = height / 2.0;
+		cg.configureRainbowGradient();
+		
+		double lineNodeSpread = sceneWidth / (double) lineNodeCount;
 		
 		for(int i = 0; i < lineNodeCount - 1; i++){
 			double x1 = (double) i * lineNodeSpread;
 			double x2 = (double) (i + 1) * lineNodeSpread;
 			
-			Line line = new Line(x1, 0, x2, 0);
-			line.setStroke(Color.AQUA);
+			Line line = new Line(x1, sceneHeight, x2, sceneHeight);
 			
-			lines.getChildren().add(line);
+			Color c = cg.getColor(i / (float) lineNodeCount);
+			line.setStroke(c);
+			
+			elements.getChildren().add(line);
 		}
-		lines.setEffect(new Glow(1.0));
+		elements.setEffect(new Glow(1.0));
 	}
 	
-	public void setLineNodeHeights(float[] data){
-		for(int i = 0; i < lines.getChildren().size(); i++){
-			Node node = lines.getChildren().get(i);
+	@Override
+	public void updateNodes(){
+		for(int i = 0; i < elements.getChildren().size(); i++){
+			Node node = elements.getChildren().get(i);
 			if(node instanceof Line){
 				double oldStartHeight = ((Line) node).getStartY();
-				double newStartHeight = screenHeight - data[i] * 30.0;
+				double newStartHeight = sceneHeight - dataReference[i] * 15.0 * (sceneHeight / HEIGHT_SCALE);
 				double startHeight = Mathg.lerp(oldStartHeight, newStartHeight, 0.07);
 				
 				double oldEndHeight = ((Line) node).getEndY();
-				double newEndHeight = screenHeight - data[i+1] * 30.0;
+				double newEndHeight = sceneHeight - dataReference[i+1] * 15.0 * (sceneHeight / HEIGHT_SCALE);
 				double endHeight = Mathg.lerp(oldEndHeight, newEndHeight, 0.07);
 				
 				((Line) node).setStartY(startHeight);
@@ -58,8 +56,23 @@ public class LinearSpectrum {
 		}
 	}
 	
-	public Group getLines(){
-		return lines;
+	@Override
+	public void resizeUpdate(){
+		double lineNodeCount = elements.getChildren().size();
+		double lineNodeSpread = sceneWidth / lineNodeCount;
+		for(int i = 0; i < lineNodeCount; i++){
+			double x = (double) i * lineNodeSpread;
+			double x2 = (double) (i+1) * lineNodeSpread;
+			
+			Node node = elements.getChildren().get(i);
+			if(node instanceof Line){
+				Line line = ((Line) node);
+				line.setStartX(x);
+				line.setEndX(x2);
+				line.setStartY(sceneHeight);
+				line.setEndY(sceneHeight);
+			}
+		}
 	}
 	
 }
