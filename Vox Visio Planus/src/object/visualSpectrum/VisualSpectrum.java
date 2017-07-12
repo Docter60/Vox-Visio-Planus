@@ -34,7 +34,6 @@ public abstract class VisualSpectrum {
 		this.sceneWidth = sceneReference.getWidth();
 		this.sceneHeight = sceneReference.getHeight();
 		this.HEIGHT_SCALE = sceneReference.getHeight();
-		System.out.println(HEIGHT_SCALE);
 	}
 	
 	public abstract void resizeUpdate();
