@@ -1,14 +1,7 @@
 package asset;
 
 import javafx.scene.Group;
-import javafx.scene.effect.Bloom;
-import javafx.scene.effect.BoxBlur;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.Glow;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.effect.MotionBlur;
-import javafx.scene.effect.Reflection;
 import javafx.scene.shape.Shape;
 
 public class EffectsKit {
@@ -17,14 +10,14 @@ public class EffectsKit {
 
 	private ColorGradient colorGradient;
 
-	private Bloom bloom;
-	private BoxBlur boxBlur;
+	//private Bloom bloom;
+	//private BoxBlur boxBlur;
 	private Glow glow;
-	private MotionBlur motionBlur;
-	private GaussianBlur gaussianBlur;
-	private DropShadow dropShadow;
-	private InnerShadow innerShadow;
-	private Reflection reflection;
+	//private MotionBlur motionBlur;
+	//private GaussianBlur gaussianBlur;
+	//private DropShadow dropShadow;
+	//private InnerShadow innerShadow;
+	//private Reflection reflection;
 	// private Lighting lighting; // May want a seperate class for lighting
 	// private PerspectiveTransform pt; // May want a separate class for pt
 

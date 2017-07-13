@@ -54,6 +54,10 @@ public abstract class VisualSpectrum {
 		resizeUpdate();
 	}
 	
+	public void setDataReference(float[] newDataReference){
+		this.dataReference = newDataReference;
+	}
+	
 	public EffectsKit getEffectsKit(){
 		return this.ek;
 	}

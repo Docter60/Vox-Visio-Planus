@@ -12,60 +12,67 @@ import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import object.visualSpectrum.BarSpectrum;
 import object.visualSpectrum.LinearSpectrum;
+import ui.OpenFileDialog;
 
 /**
  * @author Docter60
  *
  */
-public class VoxVisioPlanus extends Application {
-	public static final String DESKTOP_SAMPLE = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.m4a";
-	public static final String DESKTOP_SAMPLE2 = "C:\\Users\\Docte\\Music\\iTunes\\iTunes Media\\Music\\The Chainsmokers\\Memories...Do Not Open\\05 Something Just Like This.m4a";
-	public static final String LAPTOP_SAMPLE = "C:\\Users\\Docter60\\Music\\iTunes\\iTunes Media\\Music\\Laszlo\\Closer EP\\05 Law of the Jungle.m4a";
+public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent> {
+	public static final String INTRO = "./res/audio/VoxVisioPlanusTheme.mp3";
 	public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
 	public static final int STAGE_WIDTH = (int) SCREEN_BOUNDS.getWidth() / 2;
 	public static final int STAGE_HEIGHT = (int) SCREEN_BOUNDS.getHeight() / 2;
-
+	
 	private VoxPlayer voxPlayer;
 	private BarSpectrum barSpectrum;
 	private LinearSpectrum linearSpectrum;
+	
+	private OpenFileDialog openFileDialog;
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		////////////////////////////////////////////////////
 		// Setting up the foundation //
 		////////////////////////////////////////////////////
-
 		primaryStage.setTitle("Vox Visio Planus");
 		primaryStage.setX(STAGE_WIDTH / 2);
 		primaryStage.setY(STAGE_HEIGHT / 2);
 		Group root = new Group();
 		Scene scene = new Scene(root, STAGE_WIDTH, STAGE_HEIGHT, Color.BLACK);
-		primaryStage.setScene(scene);
+		scene.getStylesheets().add((VoxVisioPlanus.class.getResource("VoxVisioPlanus.css").toExternalForm()));
+		scene.setOnKeyPressed(this);
 
+		primaryStage.setScene(scene);
+		
+		openFileDialog = new OpenFileDialog(OpenFileDialog.OPEN_AUDIO_FILE, primaryStage);
+		
 		voxPlayer = new VoxPlayer();
-		voxPlayer.load(LAPTOP_SAMPLE);
-		voxPlayer.setVolume(0.4);
-		voxPlayer.play();
+		voxPlayer.load(INTRO);
+		voxPlayer.setVolume(0.5);
 
 		barSpectrum = new BarSpectrum(128, scene, voxPlayer.getSpectrumData());
 		barSpectrum.getEffectsKit().setFillRainbow();
 		barSpectrum.getEffectsKit().setGlow(1.0);
-		root.getChildren().add(barSpectrum.getElements());
 
 		linearSpectrum = new LinearSpectrum(128, scene, voxPlayer.getSpectrumData());
 		linearSpectrum.getEffectsKit().setStrokeRainbow();
 		linearSpectrum.getEffectsKit().setGlow(1.0);
+
 		root.getChildren().add(linearSpectrum.getElements());
+		root.getChildren().add(barSpectrum.getElements());
 
 		// Listening to window resize events
 		primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -85,7 +92,13 @@ public class VoxVisioPlanus extends Application {
 			public void handle(ActionEvent ae) {
 				barSpectrum.updateNodes();
 				linearSpectrum.updateNodes();
-				// if(Keyboard.keyIsPressed(Key.ESC)) System.exit(0); // Doesn't work. Need to use javafx methods
+				
+				if(openFileDialog.getPathToFile() != null){
+					voxPlayer.load(openFileDialog.getPathToFile());
+					openFileDialog.clearPathToFile();
+					linearSpectrum.setDataReference(voxPlayer.getSpectrumData());
+					barSpectrum.setDataReference(voxPlayer.getSpectrumData());
+				}
 			}
 		});
 
@@ -95,6 +108,8 @@ public class VoxVisioPlanus extends Application {
 		loop.play();
 
 		primaryStage.show();
+		
+		
 	}
 
 	public void setWidth(double width) {
@@ -105,6 +120,35 @@ public class VoxVisioPlanus extends Application {
 	public void setHeight(double height) {
 		barSpectrum.setSceneHeight(height);
 		linearSpectrum.setSceneHeight(height);
+	}
+
+	@Override
+	public void handle(KeyEvent keyEvent) {
+		KeyCode keyCode = keyEvent.getCode();
+
+		switch (keyCode) {
+		case ESCAPE:
+			// cleanup();
+			System.exit(0);
+			break;
+		case K:
+			if (voxPlayer.isPlaying())
+				voxPlayer.pause();
+			else
+				voxPlayer.play();
+			break;
+		case L:
+			voxPlayer.quickSeek(true);
+			break;
+		case J:
+			voxPlayer.quickSeek(false);
+			break;
+		case O:
+			openFileDialog.showDialog();
+			break;
+		default:
+			break;
+		}
 	}
 
 }

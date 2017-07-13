@@ -8,6 +8,8 @@ import java.io.File;
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 
 /**
  * @author Docter60
@@ -29,6 +31,9 @@ public class VoxPlayer {
 	public void load(String path){
 		File file = new File(path);
 		if(!file.isDirectory()){
+			if(media != null)
+				this.player.stop();
+			
 			this.media = new Media(file.toURI().toString());
 			this.player = new MediaPlayer(media);
 			
@@ -66,12 +71,23 @@ public class VoxPlayer {
 		player.setVolume(volume);
 	}
 	
+	public void quickSeek(boolean isForward){
+		if(isForward)
+			player.seek(player.getCurrentTime().add(new Duration(10000.0)));
+		else
+			player.seek(player.getCurrentTime().add(new Duration(-10000.0)));
+	}
+	
 	public float[] getSpectrumData(){
 		return spectrumData;
 	}
 	
 	public Media getCurrentMedia(){
 		return media;
+	}
+	
+	public boolean isPlaying(){
+		return player.getStatus().equals(Status.PLAYING);
 	}
 	
 }
