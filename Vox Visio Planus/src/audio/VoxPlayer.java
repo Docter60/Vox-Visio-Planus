@@ -5,6 +5,11 @@ package audio;
 
 import java.io.File;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.TargetDataLine;
+
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -24,9 +29,19 @@ public class VoxPlayer {
 	private MediaPlayer player;
 	private Media media;
 	
+	private AudioFormat format;
+	private TargetDataLine microphone; // TODO: Microphone input
+	
 	private float[] spectrumData;
 	
-	public VoxPlayer(){}
+	public VoxPlayer(){
+		this.format = new AudioFormat(8000.0f, 16, 1, true, true);
+		try {
+			this.microphone = AudioSystem.getTargetDataLine(format);
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void load(String path){
 		File file = new File(path);

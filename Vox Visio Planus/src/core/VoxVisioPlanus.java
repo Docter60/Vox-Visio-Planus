@@ -3,6 +3,7 @@
  */
 package core;
 
+import asset.dialog.OpenFileDialog;
 import audio.VoxPlayer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import object.visualSpectrum.BarSpectrum;
 import object.visualSpectrum.LinearSpectrum;
-import ui.OpenFileDialog;
+import ui.panel.SinglePlayPane;
 
 /**
  * @author Docter60
@@ -37,6 +38,8 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 	private LinearSpectrum linearSpectrum;
 	
 	private OpenFileDialog openFileDialog;
+	
+	private SinglePlayPane singlePlayPane;;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -57,7 +60,7 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 
 		primaryStage.setScene(scene);
 		
-		openFileDialog = new OpenFileDialog(OpenFileDialog.OPEN_AUDIO_FILE, primaryStage);
+		openFileDialog = new OpenFileDialog(primaryStage);
 		
 		voxPlayer = new VoxPlayer();
 		voxPlayer.load(INTRO);
@@ -71,8 +74,11 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 		linearSpectrum.getEffectsKit().setStrokeRainbow();
 		linearSpectrum.getEffectsKit().setGlow(1.0);
 
+		singlePlayPane = new SinglePlayPane(root);
+		
 		root.getChildren().add(linearSpectrum.getElements());
 		root.getChildren().add(barSpectrum.getElements());
+		singlePlayPane.addToScene();
 
 		// Listening to window resize events
 		primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -92,13 +98,7 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 			public void handle(ActionEvent ae) {
 				barSpectrum.updateNodes();
 				linearSpectrum.updateNodes();
-				
-				if(openFileDialog.getPathToFile() != null){
-					voxPlayer.load(openFileDialog.getPathToFile());
-					openFileDialog.clearPathToFile();
-					linearSpectrum.setDataReference(voxPlayer.getSpectrumData());
-					barSpectrum.setDataReference(voxPlayer.getSpectrumData());
-				}
+				singlePlayPane.updatePanel();
 			}
 		});
 
@@ -109,7 +109,7 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 
 		primaryStage.show();
 		
-		
+		singlePlayPane.updateElements();
 	}
 
 	public void setWidth(double width) {
@@ -144,7 +144,13 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 			voxPlayer.quickSeek(false);
 			break;
 		case O:
-			openFileDialog.showDialog();
+			openFileDialog.showDialog(OpenFileDialog.OPEN_AUDIO_FILE);
+			if(openFileDialog.getPathToFile() != null){
+				voxPlayer.load(openFileDialog.getPathToFile());
+				openFileDialog.clearPathToFile();
+				linearSpectrum.setDataReference(voxPlayer.getSpectrumData());
+				barSpectrum.setDataReference(voxPlayer.getSpectrumData());
+			}
 			break;
 		default:
 			break;
