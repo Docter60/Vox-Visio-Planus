@@ -4,6 +4,7 @@
 package object.visualSpectrum;
 
 import asset.EffectsKit;
+import core.VoxVisioPlanus;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -12,58 +13,41 @@ import javafx.scene.Scene;
  *
  */
 public abstract class VisualSpectrum {
+	protected static final double NATIVE_WIDTH = VoxVisioPlanus.STAGE_WIDTH;
+	protected static final double NATIVE_HEIGHT = VoxVisioPlanus.STAGE_HEIGHT;
 
-	protected final double HEIGHT_SCALE;
-	
-	protected Group elements;
-	protected int elementCount;
-	protected Scene sceneReference;
-	protected float[] dataReference;
-	protected EffectsKit ek;
-	
 	protected double sceneWidth;
 	protected double sceneHeight;
-	
-	public VisualSpectrum(int elementCount, Scene sceneReference, float[] dataReference){
+
+	protected Group elements;
+	protected float[] dataReference;
+	protected EffectsKit ek;
+
+	public VisualSpectrum(int elementCount, Scene primaryScene, float[] dataReference) {
+		this.sceneWidth = primaryScene.getWidth();
+		this.sceneHeight = primaryScene.getHeight();
 		this.elements = new Group();
-		this.elementCount = elementCount;
-		this.sceneReference = sceneReference;
 		this.dataReference = dataReference;
 		this.ek = new EffectsKit(elements);
-		
-		this.sceneWidth = sceneReference.getWidth();
-		this.sceneHeight = sceneReference.getHeight();
-		this.HEIGHT_SCALE = sceneReference.getHeight();
 	}
-	
-	public abstract void resizeUpdate();
-	
+
+	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
+		this.sceneWidth = sceneWidth;
+		this.sceneHeight = sceneHeight;
+	}
+
 	public abstract void updateNodes();
 
-	public void setElementCount(int elementCount) {
-		this.elementCount = elementCount;
-	}
-
-	public void setSceneWidth(double sceneWidth) {
-		this.sceneWidth = sceneWidth;
-		resizeUpdate();
-	}
-
-	public void setSceneHeight(double sceneHeight) {
-		this.sceneHeight = sceneHeight;
-		resizeUpdate();
-	}
-	
-	public void setDataReference(float[] newDataReference){
+	public void setDataReference(float[] newDataReference) {
 		this.dataReference = newDataReference;
 	}
-	
-	public EffectsKit getEffectsKit(){
+
+	public EffectsKit getEffectsKit() {
 		return this.ek;
 	}
 
-	public Group getElements() {
-		return elements;
+	public void addToScene(Group root) {
+		root.getChildren().add(elements);
 	}
-	
+
 }

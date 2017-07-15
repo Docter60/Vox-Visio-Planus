@@ -10,14 +10,14 @@ public class EffectsKit {
 
 	private ColorGradient colorGradient;
 
-	//private Bloom bloom;
-	//private BoxBlur boxBlur;
+	// private Bloom bloom;
+	// private BoxBlur boxBlur;
 	private Glow glow;
-	//private MotionBlur motionBlur;
-	//private GaussianBlur gaussianBlur;
-	//private DropShadow dropShadow;
-	//private InnerShadow innerShadow;
-	//private Reflection reflection;
+	// private MotionBlur motionBlur;
+	// private GaussianBlur gaussianBlur;
+	// private DropShadow dropShadow;
+	// private InnerShadow innerShadow;
+	// private Reflection reflection;
 	// private Lighting lighting; // May want a seperate class for lighting
 	// private PerspectiveTransform pt; // May want a separate class for pt
 
@@ -32,17 +32,19 @@ public class EffectsKit {
 
 	public void setFillRainbow() {
 		colorGradient.configureRainbowGradient();
-		for (int i = 0; i < groupReference.getChildren().size(); i++) {
+		int elementCount = groupReference.getChildren().size();
+		for (int i = 0; i < elementCount; i++) {
 			Shape s = ((Shape) groupReference.getChildren().get(i));
-			s.setFill(colorGradient.getColor((float) i / (float) groupReference.getChildren().size()));
+			s.setFill(colorGradient.getColor(i / (float) elementCount));
 		}
 	}
 
 	public void setStrokeRainbow() {
 		colorGradient.configureRainbowGradient();
-		for (int i = 0; i < groupReference.getChildren().size(); i++) {
+		int elementCount = groupReference.getChildren().size();
+		for (int i = 0; i < elementCount; i++) {
 			Shape s = ((Shape) groupReference.getChildren().get(i));
-			s.setStroke(colorGradient.getColor((float) i / (float) groupReference.getChildren().size()));
+			s.setStroke(colorGradient.getColor(i / (float) elementCount));
 		}
 	}
 

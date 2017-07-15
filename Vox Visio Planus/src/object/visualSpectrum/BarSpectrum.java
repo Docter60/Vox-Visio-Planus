@@ -15,16 +15,13 @@ import math.Mathg;
  */
 public class BarSpectrum extends VisualSpectrum {
 
-	public BarSpectrum(int barCount, Scene sceneReference, float[] dataReference) {
-		super(barCount, sceneReference, dataReference);
-
+	public BarSpectrum(int barCount, Scene scene, float[] dataReference) {
+		super(barCount, scene, dataReference);
 		double barWidth = sceneWidth / (double) barCount;
-		barWidth--;
-
 		double halfSceneHeight = sceneHeight / 2.0;
 		for (int i = 0; i < barCount; i++) {
 			double x = (double) i * barWidth;
-			Rectangle r = new Rectangle(x, halfSceneHeight, barWidth, 0);
+			Rectangle r = new Rectangle(x, halfSceneHeight, barWidth - 1, 0);
 			r.setFill(Color.GRAY);
 			elements.getChildren().add(r);
 		}
@@ -32,7 +29,7 @@ public class BarSpectrum extends VisualSpectrum {
 
 	@Override
 	public void updateNodes() {
-		double nativeHeightRatio = (sceneHeight / 2.0) / HEIGHT_SCALE;
+		double nativeHeightRatio = (sceneHeight / 2.0) / NATIVE_HEIGHT;
 		for (int i = 0; i < elements.getChildren().size(); i++) {
 			Node node = elements.getChildren().get(i);
 			if (node instanceof Rectangle) {
@@ -47,7 +44,8 @@ public class BarSpectrum extends VisualSpectrum {
 	}
 
 	@Override
-	public void resizeUpdate() {
+	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
+		super.sceneResizeUpdate(sceneWidth, sceneHeight);
 		double barCount = elements.getChildren().size();
 		double barWidth = sceneWidth / barCount;
 		double halfSceneHeight = sceneHeight / 2.0;

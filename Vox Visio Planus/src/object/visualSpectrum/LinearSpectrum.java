@@ -17,9 +17,7 @@ public class LinearSpectrum extends VisualSpectrum {
 
 	public LinearSpectrum(int lineNodeCount, Scene sceneReference, float[] dataReference) {
 		super(lineNodeCount, sceneReference, dataReference);
-
 		double lineNodeSpread = sceneWidth / (double) lineNodeCount;
-
 		for (int i = 0; i < lineNodeCount - 1; i++) {
 			double x1 = (double) i * lineNodeSpread;
 			double x2 = (double) (i + 1) * lineNodeSpread;
@@ -31,7 +29,7 @@ public class LinearSpectrum extends VisualSpectrum {
 
 	@Override
 	public void updateNodes() {
-		double nativeHeightRatio = sceneHeight / HEIGHT_SCALE;
+		double nativeHeightRatio = sceneHeight / NATIVE_HEIGHT;
 		for (int i = 0; i < elements.getChildren().size(); i++) {
 			Node node = elements.getChildren().get(i);
 			if (node instanceof Line) {
@@ -47,7 +45,8 @@ public class LinearSpectrum extends VisualSpectrum {
 	}
 
 	@Override
-	public void resizeUpdate() {
+	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
+		super.sceneResizeUpdate(sceneWidth, sceneHeight);
 		double lineNodeCount = elements.getChildren().size();
 		double lineNodeSpread = sceneWidth / lineNodeCount;
 		for (int i = 0; i < lineNodeCount; i++) {

@@ -9,66 +9,23 @@ import java.awt.event.KeyEvent;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import math.Mathg;
 
 /**
  * @author Docter60
  *
  */
-public class SinglePlayPane extends VoxPane {
-
-	private Group root;
-	private Rectangle sceneBound;
-	private boolean showPane;
+public class SinglePlayPane extends HotSpotPane {
+	public static final double WIDTH = 80;
+	public static final double HEIGHT = 50;
 
 	private Button openButton;
 
-	public SinglePlayPane(Group root) {
-		super("Single Play");
-		this.root = root;
-
-		this.pane.setPrefSize(80, 50);
-		this.pane.setPickOnBounds(false);
-
-		this.pane.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				showPane = true;
-			}
-		});
-
-		this.pane.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				showPane = false;
-			}
-		});
-		
-		this.sceneBound = new Rectangle(0, 0, this.pane.getPrefWidth(), this.pane.getPrefHeight());
-		this.sceneBound.setFill(Color.TRANSPARENT);
-		this.sceneBound.setStroke(Color.TRANSPARENT);
-		this.sceneBound.setPickOnBounds(true);
-		
-		this.sceneBound.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				showPane = true;
-			}
-		});
-
-		this.sceneBound.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				showPane = false;
-			}
-		});
-		
-		this.showPane = false;
+	public SinglePlayPane(Stage primaryStage) {
+		super("Single Play", 0, 0, WIDTH, HEIGHT);
+		this.relocate(0, -HEIGHT);
 
 		this.openButton = new Button("Open");
 		this.openButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -77,28 +34,35 @@ public class SinglePlayPane extends VoxPane {
 				openButtonPressed();
 			}
 		});
-		this.pane.getChildren().add(openButton);
+		this.getChildren().add(openButton);
 	}
 
 	@Override
-	public void updateElements() {
-		super.updateElements();
-		this.openButton.relocate(this.pane.getPrefWidth() / 2.0 - this.openButton.getWidth() / 2.0,
-				this.pane.getHeight() - this.openButton.getHeight() - 3.0);
+	public void initializeElements() {
+		super.initializeElements();
+		this.openButton.relocate(this.getPrefWidth() / 2.0 - this.openButton.getWidth() / 2.0,
+				this.getHeight() - this.openButton.getHeight() - 3.0);
 	}
-	
-	public void updatePanel(){
-		double oldY = this.pane.getTranslateY();
+
+	@Override
+	public void hotSpotUpdate() {
+		double oldY = this.getTranslateY();
 		double newY;
-		double showY = -this.pane.getPrefHeight();
-		
-		if(showPane)
+		double showY = -this.getPrefHeight() / 2.0; // Idk why this has to be
+													// halved, but it do
+
+		if (showPane)
 			newY = Mathg.lerp(oldY, 0, 0.07);
 		else
 			newY = Mathg.lerp(oldY, showY, 0.07);
-		
-		this.pane.setTranslateY(newY);
-		this.pane.layoutYProperty().set(newY);
+
+		this.setTranslateY(newY);
+		this.layoutYProperty().set(newY);
+	}
+
+	@Override
+	public void resizeUpdate(double newSceneWidth, double newSceneHeight) {
+		// No relocation needed since this is in the upper left corner
 	}
 
 	private void openButtonPressed() {
@@ -110,10 +74,4 @@ public class SinglePlayPane extends VoxPane {
 			e.printStackTrace();
 		}
 	}
-
-	public void addToScene(){
-		root.getChildren().add(sceneBound);
-		root.getChildren().add(pane);
-	}
-	
 }
