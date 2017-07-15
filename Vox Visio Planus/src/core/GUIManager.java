@@ -3,11 +3,15 @@
  */
 package core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import asset.dialog.OpenFileDialog;
 import audio.VoxPlayer;
 import javafx.scene.Group;
 import javafx.stage.Stage;
 import ui.panel.AudioControlPane;
+import ui.panel.HotSpotPane;
 import ui.panel.SinglePlayPane;
 
 /**
@@ -16,6 +20,8 @@ import ui.panel.SinglePlayPane;
  */
 public class GUIManager {
 
+	private List<HotSpotPane> hotSpotPanes;
+	
 	private SinglePlayPane singlePlayPane;
 	private AudioControlPane audioControlPane;
 	// private PlaylistPane playlistPane;
@@ -25,33 +31,35 @@ public class GUIManager {
 
 	public GUIManager(Stage primaryStage) {
 		this.singlePlayPane = new SinglePlayPane(primaryStage);
-		// this.audioControlPane = new AudioControlPane(primaryStage);
+		this.audioControlPane = new AudioControlPane(primaryStage);
 		// this.playlistPane = new PlaylistPane();
 		// this.recordPane = new RecordPane();
+		
+		this.hotSpotPanes = new ArrayList<HotSpotPane>();
+		this.hotSpotPanes.add(singlePlayPane);
+		this.hotSpotPanes.add(audioControlPane);
 
 		this.openFileDialog = new OpenFileDialog(primaryStage);
 	}
 
 	public void addGUIToScene(Group root) {
-		this.singlePlayPane.addToScene(root);
-		// this.audioControlPane.addToScene(root);
-		// this.playlistPane.addToScene(root);
-		// this.recordPane.addToScene(root);
+		for(HotSpotPane hsp : hotSpotPanes)
+			hsp.addToScene(root);
 	}
 
 	public void initializePanes() {
-		this.singlePlayPane.initializeElements();
-		// this.audioControlPane.initializeElements();
+		for(HotSpotPane hsp : hotSpotPanes)
+			hsp.initializeElements();
 	}
 
 	public void hotSpotUpdate() {
-		this.singlePlayPane.hotSpotUpdate();
-		// this.audioControlPane.hotSpotUpdate();
+		for(HotSpotPane hsp : hotSpotPanes)
+			hsp.hotSpotUpdate();
 	}
 
 	public void resizeUpdate(double newWidth, double newHeight) {
-		this.singlePlayPane.resizeUpdate(newWidth, newHeight);
-		// this.audioControlPane.resizeUpdate(newWidth, newHeight);
+		for(HotSpotPane hsp : hotSpotPanes)
+			hsp.resizeUpdate(newWidth, newHeight);
 	}
 
 	public void showOpenDialog(VisualSpectrumManager vsm, VoxPlayer vp) {
