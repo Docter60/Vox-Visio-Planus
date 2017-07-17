@@ -6,10 +6,8 @@ package core;
 import java.util.ArrayList;
 import java.util.List;
 
-import audio.VoxPlayer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import object.visualSpectrum.BarSpectrum;
 import object.visualSpectrum.LinearSpectrum;
 import object.visualSpectrum.VisualSpectrum;
@@ -22,16 +20,16 @@ public class VisualSpectrumManager {
 
 	private List<VisualSpectrum> visualSpectrums;
 
-	public VisualSpectrumManager(Stage primaryStage, VoxPlayer voxPlayer) {
-		Scene scene = primaryStage.getScene();
+	public VisualSpectrumManager(VoxVisioPlanus voxVisioPlanus) {
+		Scene scene = voxVisioPlanus.getPrimaryStage().getScene();
 
 		visualSpectrums = new ArrayList<VisualSpectrum>();
 
-		BarSpectrum barSpectrum = new BarSpectrum(128, scene, voxPlayer.getSpectrumData());
+		BarSpectrum barSpectrum = new BarSpectrum(128, scene, voxVisioPlanus.getVoxPlayer().getSpectrumData());
 		barSpectrum.getEffectsKit().setFillRainbow();
 		barSpectrum.getEffectsKit().setGlow(1.0);
 
-		LinearSpectrum linearSpectrum = new LinearSpectrum(128, scene, voxPlayer.getSpectrumData());
+		LinearSpectrum linearSpectrum = new LinearSpectrum(128, scene, voxVisioPlanus.getVoxPlayer().getSpectrumData());
 		linearSpectrum.getEffectsKit().setStrokeRainbow();
 		linearSpectrum.getEffectsKit().setGlow(1.0);
 

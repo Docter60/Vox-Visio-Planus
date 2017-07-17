@@ -13,7 +13,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -23,7 +24,7 @@ import javafx.util.Duration;
  * @author Docter60
  *
  */
-public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent> {
+public class VoxVisioPlanus extends Application {
 	public static final String INTRO = "./res/audio/VoxVisioPlanusTheme.mp3";
 	public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
 	public static final int STAGE_WIDTH = (int) SCREEN_BOUNDS.getWidth() / 2;
@@ -32,6 +33,8 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 	private VoxPlayer voxPlayer;
 	private VisualSpectrumManager visualSpectrumManager;
 	private GUIManager guiManager;
+	
+	private Stage primaryStage;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -39,6 +42,7 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 
 	@Override
 	public void start(Stage primaryStage) {
+		this.primaryStage = primaryStage;
 		primaryStage.setTitle("Vox Visio Planus");
 		primaryStage.setX(STAGE_WIDTH / 2);
 		primaryStage.setY(STAGE_HEIGHT / 2);
@@ -47,7 +51,7 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 
 		Scene scene = new Scene(root, STAGE_WIDTH, STAGE_HEIGHT, Color.BLACK);
 		scene.getStylesheets().add((VoxVisioPlanus.class.getResource("VoxVisioPlanus.css").toExternalForm()));
-		scene.setOnKeyPressed(this);
+		configureMnemonics(scene);
 
 		primaryStage.setScene(scene);
 
@@ -55,18 +59,22 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 		voxPlayer.load(INTRO);
 		voxPlayer.setVolume(0.5);
 
-		visualSpectrumManager = new VisualSpectrumManager(primaryStage, voxPlayer);
+		visualSpectrumManager = new VisualSpectrumManager(this);
 		visualSpectrumManager.addVisualSpectrumsToScene(root);
 
-		guiManager = new GUIManager(primaryStage);
+		guiManager = new GUIManager(this);
 		guiManager.addGUIToScene(root);
 
 		// Listening to window resize events
 		primaryStage.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-			visualSpectrumManager.sceneResizeUpdate(newWidth.doubleValue(), primaryStage.getHeight());
+			sceneResizeUpdate(primaryStage);
 		});
 		primaryStage.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-			visualSpectrumManager.sceneResizeUpdate(primaryStage.getWidth(), newHeight.doubleValue());
+			sceneResizeUpdate(primaryStage);
+		});
+		primaryStage.maximizedProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
+			System.out.println("Hello");
+			sceneResizeUpdate(primaryStage);
 		});
 
 		// main loop
@@ -87,33 +95,57 @@ public class VoxVisioPlanus extends Application implements EventHandler<KeyEvent
 
 		guiManager.initializePanes();
 	}
+	
+	private void sceneResizeUpdate(Stage primaryStage) {
+		visualSpectrumManager.sceneResizeUpdate(primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight());
+		guiManager.resizeUpdate(primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight());
+	}
 
-	@Override
-	public void handle(KeyEvent keyEvent) {
-		KeyCode keyCode = keyEvent.getCode();
+	private void configureMnemonics(Scene scene) {
+		scene.getAccelerators().put(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN),
+				new AcceleratorEventHandler() {
+					@Override
+					public void run() {
+						VoxVisioPlanus.this.guiManager.showOpenDialog();
+					}
+				});
+		
+		scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F3, KeyCombination.SHORTCUT_DOWN),
+				new AcceleratorEventHandler() {
+					@Override
+					public void run() {
+						guiManager.toggleDebug();
+					}
+				});
+		
+		scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F4, KeyCombination.SHORTCUT_DOWN),
+				new AcceleratorEventHandler() {
+					@Override
+					public void run() {
+						Stage stage = VoxVisioPlanus.this.primaryStage;
+						if(stage.isFullScreen())
+							stage.setFullScreen(false);
+						else
+							stage.setFullScreen(true);
+					}
+				});
+	}
+	
+	public VoxPlayer getVoxPlayer() {
+		return this.voxPlayer;
+	}
+	
+	public VisualSpectrumManager getVisualSpectrumManager() {
+		return this.visualSpectrumManager;
+	}
+	
+	public Stage getPrimaryStage() {
+		return this.primaryStage;
+	}
 
-		switch (keyCode) {
-		case ESCAPE:
-			// cleanup();
-			System.exit(0);
-			break;
-		case K:
-			if (voxPlayer.isPlaying())
-				voxPlayer.pause();
-			else
-				voxPlayer.play();
-			break;
-		case L:
-			voxPlayer.quickSeek(true);
-			break;
-		case J:
-			voxPlayer.quickSeek(false);
-			break;
-		case O:
-			guiManager.showOpenDialog(visualSpectrumManager, voxPlayer);
-			break;
-		default:
-			break;
+	private class AcceleratorEventHandler implements Runnable {
+		@Override
+		public void run() {
 		}
 	}
 
