@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ui.panel;
+package ui.pane;
 
 import javafx.scene.Group;
 import javafx.scene.control.Label;

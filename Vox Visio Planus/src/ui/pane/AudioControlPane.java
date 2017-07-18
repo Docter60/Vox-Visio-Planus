@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ui.panel;
+package ui.pane;
 
 import audio.VoxPlayer;
 import javafx.collections.ObservableList;
@@ -13,14 +13,14 @@ import ui.element.MediaControl;
  * @author Docter60
  *
  */
-public class AudioControlPane extends HotSpotPane {
+public class AudioControlPane extends VerticalHotSpotPane {
 	public static final double WIDTH = 300;
 	public static final double HEIGHT = 50;
 	
 	private MediaControl mediaControl;
 	
 	public AudioControlPane(Scene primaryScene, VoxPlayer voxPlayer) {
-		super("", (primaryScene.getWidth() - WIDTH) / 2.0, 0, WIDTH, HEIGHT, false);
+		super("", (primaryScene.getWidth() - WIDTH) / 2.0, 0, WIDTH, HEIGHT);
 		this.relocate((primaryScene.getWidth() - WIDTH) / 2.0, -HEIGHT);
 		this.mediaControl = new MediaControl(voxPlayer);
 		this.getChildren().add(mediaControl);

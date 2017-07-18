@@ -1,13 +1,15 @@
 package asset;
 
-import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import math.Mathg;
+import javafx.animation.Interpolator;
+import javafx.scene.paint.Color;
 
 public class ColorGradient {
 
+	private static Interpolator interpolator = Interpolator.LINEAR;
+	
 	private List<Color> nodes;
 
 	public ColorGradient() {
@@ -58,9 +60,9 @@ public class ColorGradient {
 			b2 = b1;
 		}
 
-		double r = Mathg.lerp(r1, r2, nodeLerp_t);
-		double g = Mathg.lerp(g1, g2, nodeLerp_t);
-		double b = Mathg.lerp(b1, b2, nodeLerp_t);
+		double r = interpolator.interpolate(r1, r2, nodeLerp_t);
+		double g = interpolator.interpolate(g1, g2, nodeLerp_t);
+		double b = interpolator.interpolate(b1, b2, nodeLerp_t);
 
 		return new Color(r, g, b, 1.0);
 	}

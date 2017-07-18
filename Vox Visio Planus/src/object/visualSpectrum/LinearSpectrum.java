@@ -7,7 +7,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import math.Mathg;
 
 /**
  * @author Docter60
@@ -35,9 +34,9 @@ public class LinearSpectrum extends VisualSpectrum {
 			if (node instanceof Line) {
 				Line l = ((Line) node);
 				double newStartHeight = sceneHeight - dataReference[i] * 15.0 * nativeHeightRatio;
-				double startHeight = Mathg.lerp(l.getStartY(), newStartHeight, 0.07);
+				double startHeight = interpolator.interpolate(l.getStartY(), newStartHeight, 0.07);
 				double newEndHeight = sceneHeight - dataReference[i + 1] * 15.0 * nativeHeightRatio;
-				double endHeight = Mathg.lerp(l.getEndY(), newEndHeight, 0.07);
+				double endHeight = interpolator.interpolate(l.getEndY(), newEndHeight, 0.07);
 				l.setStartY(startHeight);
 				l.setEndY(endHeight);
 			}

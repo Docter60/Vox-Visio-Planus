@@ -3,6 +3,9 @@
  */
 package core;
 
+import java.io.File;
+
+import audio.VoxMedia;
 import audio.VoxPlayer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -56,8 +59,8 @@ public class VoxVisioPlanus extends Application {
 		primaryStage.setScene(scene);
 
 		voxPlayer = new VoxPlayer();
-		voxPlayer.load(INTRO);
-		voxPlayer.setVolume(0.5);
+		voxPlayer.load(new VoxMedia(new File(INTRO).toURI().toString()));
+		voxPlayer.setVolume(0.2);
 
 		visualSpectrumManager = new VisualSpectrumManager(this);
 		visualSpectrumManager.addVisualSpectrumsToScene(root);
@@ -72,7 +75,7 @@ public class VoxVisioPlanus extends Application {
 		primaryStage.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			sceneResizeUpdate(primaryStage);
 		});
-		primaryStage.maximizedProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
+		primaryStage.fullScreenProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
 			System.out.println("Hello");
 			sceneResizeUpdate(primaryStage);
 		});
@@ -97,8 +100,10 @@ public class VoxVisioPlanus extends Application {
 	}
 	
 	private void sceneResizeUpdate(Stage primaryStage) {
-		visualSpectrumManager.sceneResizeUpdate(primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight());
-		guiManager.resizeUpdate(primaryStage.getScene().getWidth(), primaryStage.getScene().getHeight());
+		double width = primaryStage.getScene().getWidth();
+		double height = primaryStage.getScene().getHeight();
+		visualSpectrumManager.sceneResizeUpdate(width, height);
+		guiManager.resizeUpdate(width, height);
 	}
 
 	private void configureMnemonics(Scene scene) {

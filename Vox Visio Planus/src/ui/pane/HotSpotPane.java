@@ -1,15 +1,15 @@
 /**
  * 
  */
-package ui.panel;
+package ui.pane;
 
+import javafx.animation.Interpolator;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import math.Mathg;
 
 /**
  * @author Docter60
@@ -17,42 +17,20 @@ import math.Mathg;
  */
 public abstract class HotSpotPane extends VoxPane {
 
+	protected static Interpolator interpolator = Interpolator.LINEAR;
+	
 	protected HotSpot hotSpot;
 	protected boolean showPane;
-	protected boolean isHorizontal;
 	
-	public HotSpotPane(String title, double x, double y, double width, double height, boolean isHorizontal) {
+	protected HotSpotPane(String title, double x, double y, double width, double height) {
 		super(title, x, y, width, height);
 		this.hotSpot = new HotSpot(x, y, width, height);
 		this.showPane = false;
-		this.isHorizontal = isHorizontal;
 		this.setHotSpotProperties(this.hotSpot);
 		this.setHotSpotProperties(this);
 	}
 	
-	public void hotSpotUpdate() {
-		double oldW;
-		double newW;
-		double showW;
-		
-		if(isHorizontal) {
-			oldW = this.getTranslateX();
-			showW = this.getWidth();
-		} else {
-			oldW = this.getTranslateY();
-			showW = this.getHeight();
-		}
-		
-		if(showPane)
-			newW = Mathg.lerp(oldW, showW, 0.07);
-		else
-			newW = Mathg.lerp(oldW, 0, 0.07);
-		
-		if(isHorizontal)
-			this.setTranslateX(newW);
-		else
-			this.setTranslateY(newW);
-	}
+	public abstract void hotSpotUpdate();
 	
 	@Override
 	public void addToScene(Group group) {

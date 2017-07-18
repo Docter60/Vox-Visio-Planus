@@ -3,17 +3,20 @@
  */
 package core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import asset.dialog.OpenFileDialog;
+import audio.VoxMedia;
 import audio.VoxPlayer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import ui.panel.AudioControlPane;
-import ui.panel.HotSpotPane;
-import ui.panel.PlaylistPane;
-import ui.panel.SinglePlayPane;
+import ui.pane.AudioControlPane;
+import ui.pane.HotSpotPane;
+import ui.pane.PlaylistPane;
+import ui.pane.SinglePlayPane;
+import ui.pane.SongInfoPane;
 
 /**
  * @author Docter60
@@ -29,6 +32,7 @@ public class GUIManager {
 	private AudioControlPane audioControlPane;
 	private PlaylistPane playlistPane;
 	// private RecordPane recordPane
+	private SongInfoPane songInfoPane;
 
 	private OpenFileDialog openFileDialog;
 
@@ -41,13 +45,18 @@ public class GUIManager {
 		
 		this.singlePlayPane = new SinglePlayPane(primaryScene, this);
 		this.audioControlPane = new AudioControlPane(primaryScene, voxVisioPlanus.getVoxPlayer());
-		this.playlistPane = new PlaylistPane(primaryScene);
+		this.playlistPane = new PlaylistPane(primaryScene, voxVisioPlanus.getVoxPlayer());
 		// this.recordPane = new RecordPane();
+		this.songInfoPane = new SongInfoPane(primaryScene);
+		
+		voxVisioPlanus.getVoxPlayer().addMediaInfoListener(songInfoPane);
 
 		this.hotSpotPanes = new ArrayList<HotSpotPane>();
 		this.hotSpotPanes.add(singlePlayPane);
 		this.hotSpotPanes.add(audioControlPane);
 		this.hotSpotPanes.add(playlistPane);
+		
+		this.hotSpotPanes.add(songInfoPane);
 
 		this.openFileDialog = new OpenFileDialog(voxVisioPlanus.getPrimaryStage());
 
@@ -79,7 +88,7 @@ public class GUIManager {
 		if (openFileDialog.getPathToFile() != null) {
 			VoxPlayer vp = this.voxVisioPlanus.getVoxPlayer();
 			VisualSpectrumManager vsm = this.voxVisioPlanus.getVisualSpectrumManager();
-			vp.load(openFileDialog.getPathToFile());
+			vp.load(new VoxMedia(new File(openFileDialog.getPathToFile()).toURI().toString()));
 			openFileDialog.clearPathToFile();
 			vsm.setDataReference(vp.getSpectrumData());
 		}

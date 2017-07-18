@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ui.panel;
+package ui.pane;
 
 import core.GUIManager;
 import javafx.event.ActionEvent;
@@ -13,7 +13,7 @@ import javafx.scene.control.Button;
  * @author Docter60
  *
  */
-public class SinglePlayPane extends HotSpotPane {
+public class SinglePlayPane extends VerticalHotSpotPane {
 	public static final double WIDTH = 80;
 	public static final double HEIGHT = 50;
 	
@@ -22,7 +22,7 @@ public class SinglePlayPane extends HotSpotPane {
 	private Button openButton;
 
 	public SinglePlayPane(Scene primaryScene, GUIManager guiManager) {
-		super("Single Play", 0, 0, WIDTH, HEIGHT, false);
+		super("Single Play", 0, 0, WIDTH, HEIGHT);
 		this.guiManager = guiManager;
 		
 		this.relocate(0, -HEIGHT);

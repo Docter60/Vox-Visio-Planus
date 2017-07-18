@@ -5,6 +5,7 @@ package object.visualSpectrum;
 
 import asset.EffectsKit;
 import core.VoxVisioPlanus;
+import javafx.animation.Interpolator;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -19,6 +20,8 @@ public abstract class VisualSpectrum {
 	protected double sceneWidth;
 	protected double sceneHeight;
 
+	protected static Interpolator interpolator = Interpolator.LINEAR;
+	
 	protected Group elements;
 	protected float[] dataReference;
 	protected EffectsKit ek;

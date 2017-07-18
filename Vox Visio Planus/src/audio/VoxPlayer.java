@@ -3,15 +3,11 @@
  */
 package audio;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.TargetDataLine;
-
+import javafx.scene.image.Image;
 import javafx.scene.media.AudioSpectrumListener;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
@@ -22,52 +18,56 @@ import javafx.util.Duration;
  */
 public class VoxPlayer {
 
-	public static final int BANDS = 256;
-	public static final int THRESHOLD = -60;
+	public static final int BANDS = 512;
+	public static final int THRESHOLD = -70;
 	public static final double INTERVAL = 0.01;
+	
+	private List<VoxMediaInfoListener> infoListeners;
 
 	private MediaPlayer player;
-	private Media media;
+	private VoxMedia media;
 
-	private AudioFormat format;
-	private TargetDataLine microphone; // TODO: Microphone input
-
+	private String[] currentSongInfo;
+	private Image currentAlbumCover;
+	
 	private float[] spectrumData;
+	private double volume;
 
 	public VoxPlayer() {
-		this.format = new AudioFormat(8000.0f, 16, 1, true, true);
-		try {
-			this.microphone = AudioSystem.getTargetDataLine(format);
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
+		this.infoListeners = new ArrayList<VoxMediaInfoListener>();
+		this.currentSongInfo = new String[4];
+		this.volume = 0.5;
+	}
+	
+	public void addMediaInfoListener(VoxMediaInfoListener vmil) {
+		this.infoListeners.add(vmil);
 	}
 
-	public void load(String path) {
-		File file = new File(path);
-		if (!file.isDirectory()) {
-			if (media != null)
-				this.player.stop();
+	public void load(VoxMedia voxMedia) {
+		if (media != null)
+			this.player.stop();
 
-			this.media = new Media(file.toURI().toString());
-			this.player = new MediaPlayer(media);
+		this.media = voxMedia;
+		this.player = new MediaPlayer(media.getMedia());
+		this.player.setVolume(this.volume);
 
-			this.player = new MediaPlayer(media);
-			this.player.setAudioSpectrumNumBands(BANDS);
-			this.player.setAudioSpectrumInterval(INTERVAL);
-			this.player.setAudioSpectrumThreshold(THRESHOLD);
+		this.player.setAudioSpectrumNumBands(BANDS);
+		this.player.setAudioSpectrumInterval(INTERVAL);
+		this.player.setAudioSpectrumThreshold(THRESHOLD);
 
-			this.spectrumData = new float[player.getAudioSpectrumNumBands()];
+		this.spectrumData = new float[player.getAudioSpectrumNumBands()];
 
-			this.player.setAudioSpectrumListener(new AudioSpectrumListener() {
-				@Override
-				public void spectrumDataUpdate(double timestamp, double duration, float[] magnitudes, float[] phases) {
-					for (int i = 0; i < spectrumData.length; i++) {
-						spectrumData[i] = magnitudes[i] - player.getAudioSpectrumThreshold();
-					}
+		this.player.setAudioSpectrumListener(new AudioSpectrumListener() {
+			@Override
+			public void spectrumDataUpdate(double timestamp, double duration, float[] magnitudes, float[] phases) {
+				for (int i = 0; i < spectrumData.length; i++) {
+					spectrumData[i] = magnitudes[i] - player.getAudioSpectrumThreshold();
+					// TODO figure out window
 				}
-			});
-		}
+			}
+		});
+		
+		this.player.setOnReady(new OnReadyListener());
 	}
 
 	public void play() {
@@ -83,7 +83,7 @@ public class VoxPlayer {
 	}
 
 	public void setVolume(double volume) {
-		player.setVolume(volume);
+		this.volume = volume;
 	}
 
 	public void quickSeek(boolean isForward) {
@@ -97,12 +97,38 @@ public class VoxPlayer {
 		return spectrumData;
 	}
 
-	public Media getCurrentMedia() {
+	public VoxMedia getVoxMedia() {
 		return media;
 	}
 
 	public boolean isPlaying() {
 		return player.getStatus().equals(Status.PLAYING);
+	}
+	
+	public String[] getCurrentMediaInfo() {
+		return this.currentSongInfo;
+	}
+	
+	public Image getcurrentAlbumCover() {
+		return this.currentAlbumCover;
+	}
+	
+	private class OnReadyListener implements Runnable {
+		@Override
+		public void run() {
+			VoxMedia vm = VoxPlayer.this.media;
+			String[] info = VoxPlayer.this.currentSongInfo;
+			info[0] = vm.getTitle();
+			info[1] = vm.getArtist();
+			info[2] = vm.getAlbum();
+			info[3] = vm.getYear();
+			
+			VoxPlayer.this.currentAlbumCover = vm.getAlbumCover();
+			
+			for(VoxMediaInfoListener vmil : infoListeners)
+				vmil.onMediaInfoUpdate(info, vm.getAlbumCover());
+		}
+		
 	}
 
 }
