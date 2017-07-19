@@ -3,6 +3,8 @@
  */
 package audio;
 
+import java.io.File;
+
 import javafx.collections.MapChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
@@ -25,8 +27,9 @@ public class VoxMedia {
 
 	private Image albumCover;
 
-	public VoxMedia(String uriSource) {
-		this.media = new Media(uriSource);
+	public VoxMedia(String filePath) {
+		this.path = filePath;
+		this.media = new Media(new File(filePath).toURI().toString());
 		
 		this.albumCover = defaultCover;
 		

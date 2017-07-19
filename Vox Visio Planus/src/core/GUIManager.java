@@ -3,7 +3,6 @@
  */
 package core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +56,11 @@ public class GUIManager {
 		this.hotSpotPanes.add(playlistPane);
 		
 		this.hotSpotPanes.add(songInfoPane);
+		
+		voxVisioPlanus.addResizeListener(singlePlayPane);
+		voxVisioPlanus.addResizeListener(audioControlPane);
+		voxVisioPlanus.addResizeListener(playlistPane);
+		voxVisioPlanus.addResizeListener(songInfoPane);
 
 		this.openFileDialog = new OpenFileDialog(voxVisioPlanus.getPrimaryStage());
 
@@ -78,19 +82,12 @@ public class GUIManager {
 			hsp.hotSpotUpdate();
 	}
 
-	public void resizeUpdate(double newWidth, double newHeight) {
-		for (HotSpotPane hsp : hotSpotPanes)
-			hsp.resizeUpdate(newWidth, newHeight);
-	}
-
 	public void showOpenDialog() {
 		openFileDialog.showDialog(OpenFileDialog.AUDIO_FILE);
 		if (openFileDialog.getPathToFile() != null) {
 			VoxPlayer vp = this.voxVisioPlanus.getVoxPlayer();
-			VisualSpectrumManager vsm = this.voxVisioPlanus.getVisualSpectrumManager();
-			vp.load(new VoxMedia(new File(openFileDialog.getPathToFile()).toURI().toString()));
+			vp.load(new VoxMedia(openFileDialog.getPathToFile()));
 			openFileDialog.clearPathToFile();
-			vsm.setDataReference(vp.getSpectrumData());
 		}
 	}
 

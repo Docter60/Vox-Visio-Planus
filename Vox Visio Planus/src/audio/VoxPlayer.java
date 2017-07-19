@@ -23,6 +23,7 @@ public class VoxPlayer {
 	public static final double INTERVAL = 0.01;
 	
 	private List<VoxMediaInfoListener> infoListeners;
+	private List<VoxMediaSpectrumListener> spectrumListeners;
 
 	private MediaPlayer player;
 	private VoxMedia media;
@@ -32,15 +33,22 @@ public class VoxPlayer {
 	
 	private float[] spectrumData;
 	private double volume;
+	private boolean autoPlay;
 
 	public VoxPlayer() {
 		this.infoListeners = new ArrayList<VoxMediaInfoListener>();
+		this.spectrumListeners = new ArrayList<VoxMediaSpectrumListener>();
 		this.currentSongInfo = new String[4];
 		this.volume = 0.5;
+		this.autoPlay = false;
 	}
 	
 	public void addMediaInfoListener(VoxMediaInfoListener vmil) {
 		this.infoListeners.add(vmil);
+	}
+	
+	public void addMediaSpectrumListener(VoxMediaSpectrumListener vmsl) {
+		this.spectrumListeners.add(vmsl);
 	}
 
 	public void load(VoxMedia voxMedia) {
@@ -66,24 +74,32 @@ public class VoxPlayer {
 				}
 			}
 		});
+		this.player.setAutoPlay(autoPlay);
+		
+		for(VoxMediaSpectrumListener vmsl : spectrumListeners)
+			vmsl.updateDataReference(this.spectrumData);
 		
 		this.player.setOnReady(new OnReadyListener());
 	}
 
 	public void play() {
 		player.play();
+		this.autoPlay = true; // Should probably let this be a setting...
 	}
 
 	public void pause() {
 		player.pause();
+		this.autoPlay = false; // above
 	}
 
 	public void stop() {
 		player.stop();
+		this.autoPlay = false; // above
 	}
 
 	public void setVolume(double volume) {
 		this.volume = volume;
+		this.player.setVolume(volume);
 	}
 
 	public void quickSeek(boolean isForward) {

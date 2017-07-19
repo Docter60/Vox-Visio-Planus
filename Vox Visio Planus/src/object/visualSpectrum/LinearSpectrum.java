@@ -44,8 +44,9 @@ public class LinearSpectrum extends VisualSpectrum {
 	}
 
 	@Override
-	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
-		super.sceneResizeUpdate(sceneWidth, sceneHeight);
+	public void resizeUpdate(double sceneWidth, double sceneHeight) {
+		super.resizeUpdate(sceneWidth, sceneHeight);
+		double nativeHeightRatio = sceneHeight / NATIVE_HEIGHT;
 		double lineNodeCount = elements.getChildren().size();
 		double lineNodeSpread = sceneWidth / lineNodeCount;
 		for (int i = 0; i < lineNodeCount; i++) {
@@ -56,8 +57,8 @@ public class LinearSpectrum extends VisualSpectrum {
 				Line l = ((Line) node);
 				l.setStartX(x);
 				l.setEndX(x2);
-				l.setStartY(sceneHeight);
-				l.setEndY(sceneHeight);
+				l.setStartY(sceneHeight - dataReference[i] * 15.0 * nativeHeightRatio);
+				l.setEndY(sceneHeight - dataReference[i + 1] * 15.0 * nativeHeightRatio);
 			}
 		}
 	}

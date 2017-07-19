@@ -67,10 +67,10 @@ public class SongInfoPane extends VerticalHotSpotPane implements VoxMediaInfoLis
 	}
 
 	@Override
-	public void resizeUpdate(double newSceneWidth, double newSceneHeight) {
-		double newX = (newSceneWidth - WIDTH) / 2.0;
-		this.relocate(newX, newSceneHeight);
-		this.hotSpot.relocate(newX, newSceneHeight - HEIGHT);
+	public void resizeUpdate(double newWidth, double newHeight) {
+		double newX = (newWidth - WIDTH) / 2.0;
+		this.relocate(newX, newHeight);
+		this.hotSpot.relocate(newX, newHeight - HEIGHT);
 	}
 
 	@Override

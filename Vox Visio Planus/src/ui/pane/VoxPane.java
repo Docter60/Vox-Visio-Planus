@@ -3,6 +3,7 @@
  */
 package ui.pane;
 
+import core.ResizeListener;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -11,7 +12,7 @@ import javafx.scene.layout.Pane;
  * @author Docter60
  *
  */
-public abstract class VoxPane extends Pane{
+public abstract class VoxPane extends Pane implements ResizeListener{
 
 	protected Label label;
 
@@ -30,7 +31,7 @@ public abstract class VoxPane extends Pane{
 	}
 
 	public void setSize(double width, double height) {
-		this.resize(width, height);
+		this.resizeUpdate(width, height);
 	}
 
 	public void initializeElements() {
@@ -38,7 +39,5 @@ public abstract class VoxPane extends Pane{
 	}
 
 	public abstract void addToScene(Group group);
-
-	public abstract void resizeUpdate(double newSceneWidth, double newSceneHeight);
 
 }

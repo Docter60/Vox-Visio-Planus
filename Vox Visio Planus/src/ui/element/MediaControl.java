@@ -4,11 +4,15 @@
 package ui.element;
 
 import audio.VoxPlayer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 
 /**
  * @author Docter60
@@ -17,7 +21,7 @@ import javafx.scene.image.ImageView;
 public class MediaControl extends Group {
 
 	public static final String AUDIO_CONTROL_RES = "file:res/texture/audioControl/";
-	public static final double BUTTON_FIT_SIZE = 20;
+	public static final double BUTTON_FIT_SIZE = 20.0;
 	
 	public ImageView previousImage;
 	public ImageView rewindImage;
@@ -33,6 +37,8 @@ public class MediaControl extends Group {
 	private Button stopButton;
 	private Button fastForwardButton;
 	private Button skipButton;
+	
+	private Slider volumeSlider;
 	
 	private VoxPlayer voxPlayer;
 	
@@ -59,8 +65,10 @@ public class MediaControl extends Group {
 		configureButtonControl(this.stopButton, this.stopImage);
 		configureButtonControl(this.fastForwardButton, this.fastForwardImage);
 		configureButtonControl(this.skipButton, this.skipImage);
+		configureSliderControl();
 		
 		configureButtonActions();
+		configureSliderActions();
 	}
 	
 	private void initializeControls() {
@@ -78,6 +86,8 @@ public class MediaControl extends Group {
 		this.stopButton = new Button();
 		this.fastForwardButton = new Button();
 		this.skipButton = new Button();
+		
+		this.volumeSlider = new Slider();
 	}
 	
 	private void setFitSize(ImageView iv) {
@@ -90,6 +100,16 @@ public class MediaControl extends Group {
 		setFitSize(iv);
 		b.setGraphic(iv);
 		this.getChildren().add(b);
+	}
+	
+	private void configureSliderControl() {
+		this.volumeSlider.setMin(0.0);
+		this.volumeSlider.setMax(1.0);
+		this.volumeSlider.setValue(0.8);
+	}
+	
+	public Slider getVolumeSlider() {
+		return this.volumeSlider;
 	}
 	
 	private void configureButtonActions() {
@@ -139,6 +159,17 @@ public class MediaControl extends Group {
 			@Override
 			public void handle(ActionEvent e) {
 				// TODO Skip action event code
+			}
+		});
+	}
+	
+	private void configureSliderActions() {
+		this.volumeSlider.valueProperty().addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> o, Object obj, Object obj2) {
+				double volume = MediaControl.this.volumeSlider.getValue();
+				System.out.println(volume);
+				MediaControl.this.voxPlayer.setVolume(volume);
 			}
 		});
 	}

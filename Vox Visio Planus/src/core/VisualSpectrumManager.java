@@ -6,6 +6,7 @@ package core;
 import java.util.ArrayList;
 import java.util.List;
 
+import audio.VoxPlayer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import object.visualSpectrum.BarSpectrum;
@@ -23,6 +24,7 @@ public class VisualSpectrumManager {
 	public VisualSpectrumManager(VoxVisioPlanus voxVisioPlanus) {
 		Scene scene = voxVisioPlanus.getPrimaryStage().getScene();
 
+		VoxPlayer voxPlayer = voxVisioPlanus.getVoxPlayer();
 		visualSpectrums = new ArrayList<VisualSpectrum>();
 
 		BarSpectrum barSpectrum = new BarSpectrum(128, scene, voxVisioPlanus.getVoxPlayer().getSpectrumData());
@@ -35,6 +37,12 @@ public class VisualSpectrumManager {
 
 		this.visualSpectrums.add(barSpectrum);
 		this.visualSpectrums.add(linearSpectrum);
+		
+		voxPlayer.addMediaSpectrumListener(barSpectrum);
+		voxPlayer.addMediaSpectrumListener(linearSpectrum);
+		
+		voxVisioPlanus.addResizeListener(barSpectrum);
+		voxVisioPlanus.addResizeListener(linearSpectrum);
 	}
 
 	public void addVisualSpectrumsToScene(Group root) {
@@ -46,15 +54,4 @@ public class VisualSpectrumManager {
 		for (VisualSpectrum vs : visualSpectrums)
 			vs.updateNodes();
 	}
-
-	public void setDataReference(float[] data) {
-		for (VisualSpectrum vs : visualSpectrums)
-			vs.setDataReference(data);
-	}
-
-	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
-		for (VisualSpectrum vs : visualSpectrums)
-			vs.sceneResizeUpdate(sceneWidth, sceneHeight);
-	}
-
 }

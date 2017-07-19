@@ -4,6 +4,8 @@
 package object.visualSpectrum;
 
 import asset.EffectsKit;
+import audio.VoxMediaSpectrumListener;
+import core.ResizeListener;
 import core.VoxVisioPlanus;
 import javafx.animation.Interpolator;
 import javafx.scene.Group;
@@ -13,7 +15,7 @@ import javafx.scene.Scene;
  * @author Docter60
  *
  */
-public abstract class VisualSpectrum {
+public abstract class VisualSpectrum implements VoxMediaSpectrumListener, ResizeListener {
 	protected static final double NATIVE_WIDTH = VoxVisioPlanus.STAGE_WIDTH;
 	protected static final double NATIVE_HEIGHT = VoxVisioPlanus.STAGE_HEIGHT;
 
@@ -34,7 +36,8 @@ public abstract class VisualSpectrum {
 		this.ek = new EffectsKit(elements);
 	}
 
-	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
+	@Override
+	public void resizeUpdate(double sceneWidth, double sceneHeight) {
 		this.sceneWidth = sceneWidth;
 		this.sceneHeight = sceneHeight;
 	}
@@ -51,6 +54,11 @@ public abstract class VisualSpectrum {
 
 	public void addToScene(Group root) {
 		root.getChildren().add(elements);
+	}
+	
+	@Override
+	public void updateDataReference(float[] data) {
+		this.dataReference = data;
 	}
 
 }

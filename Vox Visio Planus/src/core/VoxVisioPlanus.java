@@ -4,9 +4,12 @@
 package core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import audio.VoxMedia;
 import audio.VoxPlayer;
+import audio.VoxPlaylist;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -33,6 +36,8 @@ public class VoxVisioPlanus extends Application {
 	public static final int STAGE_WIDTH = (int) SCREEN_BOUNDS.getWidth() / 2;
 	public static final int STAGE_HEIGHT = (int) SCREEN_BOUNDS.getHeight() / 2;
 
+	private List<ResizeListener> resizeListeners;
+	
 	private VoxPlayer voxPlayer;
 	private VisualSpectrumManager visualSpectrumManager;
 	private GUIManager guiManager;
@@ -46,6 +51,7 @@ public class VoxVisioPlanus extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		this.resizeListeners = new ArrayList<ResizeListener>();
 		primaryStage.setTitle("Vox Visio Planus");
 		primaryStage.setX(STAGE_WIDTH / 2);
 		primaryStage.setY(STAGE_HEIGHT / 2);
@@ -59,7 +65,7 @@ public class VoxVisioPlanus extends Application {
 		primaryStage.setScene(scene);
 
 		voxPlayer = new VoxPlayer();
-		voxPlayer.load(new VoxMedia(new File(INTRO).toURI().toString()));
+		voxPlayer.load(new VoxMedia(INTRO));
 		voxPlayer.setVolume(0.2);
 
 		visualSpectrumManager = new VisualSpectrumManager(this);
@@ -70,14 +76,13 @@ public class VoxVisioPlanus extends Application {
 
 		// Listening to window resize events
 		primaryStage.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-			sceneResizeUpdate(primaryStage);
+			VoxVisioPlanus.this.sceneResizeUpdate();
 		});
 		primaryStage.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-			sceneResizeUpdate(primaryStage);
+			VoxVisioPlanus.this.sceneResizeUpdate();
 		});
 		primaryStage.fullScreenProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
-			System.out.println("Hello");
-			sceneResizeUpdate(primaryStage);
+			VoxVisioPlanus.this.sceneResizeUpdate();
 		});
 
 		// main loop
@@ -86,8 +91,8 @@ public class VoxVisioPlanus extends Application {
 
 		KeyFrame kf = new KeyFrame(Duration.seconds(0.01), new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
-				visualSpectrumManager.updateMagnitudeData();
 				guiManager.hotSpotUpdate();
+				visualSpectrumManager.updateMagnitudeData();
 			}
 		});
 
@@ -97,13 +102,16 @@ public class VoxVisioPlanus extends Application {
 		primaryStage.show();
 
 		guiManager.initializePanes();
+		
+		// Testing grounds
+		
 	}
 	
-	private void sceneResizeUpdate(Stage primaryStage) {
-		double width = primaryStage.getScene().getWidth();
-		double height = primaryStage.getScene().getHeight();
-		visualSpectrumManager.sceneResizeUpdate(width, height);
-		guiManager.resizeUpdate(width, height);
+	public void sceneResizeUpdate() {
+		double width = this.primaryStage.getScene().getWidth();
+		double height = this.primaryStage.getScene().getHeight();
+		for(ResizeListener rl : resizeListeners)
+			rl.resizeUpdate(width, height);
 	}
 
 	private void configureMnemonics(Scene scene) {
@@ -134,6 +142,10 @@ public class VoxVisioPlanus extends Application {
 							stage.setFullScreen(true);
 					}
 				});
+	}
+	
+	public void addResizeListener(ResizeListener rl) {
+		resizeListeners.add(rl);
 	}
 	
 	public VoxPlayer getVoxPlayer() {

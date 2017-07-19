@@ -43,19 +43,22 @@ public class BarSpectrum extends VisualSpectrum {
 	}
 
 	@Override
-	public void sceneResizeUpdate(double sceneWidth, double sceneHeight) {
-		super.sceneResizeUpdate(sceneWidth, sceneHeight);
+	public void resizeUpdate(double sceneWidth, double sceneHeight) {
+		super.resizeUpdate(sceneWidth, sceneHeight);
+		double nativeHeightRatio = sceneHeight / 2.0 / NATIVE_HEIGHT;
 		double barCount = elements.getChildren().size();
 		double barWidth = sceneWidth / barCount;
 		double halfSceneHeight = sceneHeight / 2.0;
 		for (int i = 0; i < barCount; i++) {
 			double x = (double) i * barWidth;
+			double height = dataReference[i] * 30.0 * nativeHeightRatio;
 			Node node = elements.getChildren().get(i);
 			if (node instanceof Rectangle) {
 				Rectangle r = ((Rectangle) node);
-				r.setX(x);
-				r.setY(halfSceneHeight);
 				r.setWidth(barWidth - 1.0);
+				r.setHeight(height);
+				r.setX(x);
+				r.setY(halfSceneHeight - r.getHeight() / 2.0);
 			}
 		}
 	}

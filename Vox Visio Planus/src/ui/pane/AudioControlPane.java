@@ -7,6 +7,7 @@ import audio.VoxPlayer;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Slider;
 import ui.element.MediaControl;
 
 /**
@@ -14,7 +15,7 @@ import ui.element.MediaControl;
  *
  */
 public class AudioControlPane extends VerticalHotSpotPane {
-	public static final double WIDTH = 300;
+	public static final double WIDTH = 500;
 	public static final double HEIGHT = 50;
 	
 	private MediaControl mediaControl;
@@ -24,6 +25,7 @@ public class AudioControlPane extends VerticalHotSpotPane {
 		this.relocate((primaryScene.getWidth() - WIDTH) / 2.0, -HEIGHT);
 		this.mediaControl = new MediaControl(voxPlayer);
 		this.getChildren().add(mediaControl);
+		this.getChildren().add(this.mediaControl.getVolumeSlider());
 	}
 
 	@Override
@@ -41,6 +43,9 @@ public class AudioControlPane extends VerticalHotSpotPane {
 			double x = i * buttonWidth + mainControlsStart;
 			children.get(i).relocate(x, y);
 		}
+		
+		Slider volumeSlider = this.mediaControl.getVolumeSlider();
+		volumeSlider.relocate(WIDTH - volumeSlider.getWidth(), (HEIGHT - volumeSlider.getHeight()) / 2.0);
 	}
 
 	@Override
