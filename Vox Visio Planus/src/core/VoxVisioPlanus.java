@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import window.WindowPane;
 
 /**
  * @author Docter60
@@ -108,7 +109,8 @@ public class VoxVisioPlanus extends Application {
 		guiManager.initializePanes();
 		
 		// Testing grounds
-		
+		WindowPane wp = new WindowPane(100, 100, 200, 100);
+		root.getChildren().add(wp);
 	}
 	
 	public void sceneResizeUpdate() {

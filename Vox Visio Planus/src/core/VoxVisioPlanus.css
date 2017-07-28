@@ -6,13 +6,19 @@
 }
 
 #pane {
-	-fx-background-color: #888888;
+	-fx-background-color: #888888DD;
 	-fx-opacity: 0.5;
 }
 
 #pane:hover {
-	-fx-background-color: #888888;
+	-fx-background-color: #888888DD;
 	-fx-opacity: 0.8;
+}
+
+#windowPane {
+	-fx-background-color: #888888DD;
+	-fx-border-radius: 10 10 10 10;
+	-fx-background-radius: 10 10 10 10;
 }
 
 #songInfoPane {
@@ -22,6 +28,24 @@
 #songInfoLabel {
     -fx-text-fill: white;
     -fx-opacity: 1.0;
+}
+
+#closeButton {
+	-fx-background-color: #888888DD;
+	-fx-opacity: 0.6;
+	-fx-border-radius: 10 10 10 10;
+	-fx-background-radius: 10 10 10 10;
+}
+
+#closeButton:hover {
+	-fx-background-color: #888888DD;
+	-fx-opacity: 1.0;
+	-fx-border-radius: 10 10 10 10;
+	-fx-background-radius: 10 10 10 10;
+}
+
+#infoText {
+	-fx-background-color: #DDDDDDDD;
 }
 
 .button {
