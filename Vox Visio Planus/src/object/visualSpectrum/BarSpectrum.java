@@ -35,7 +35,7 @@ public class BarSpectrum extends VisualSpectrum {
 				Rectangle r = ((Rectangle) node);
 				double oldHeight = r.getHeight();
 				double newHeight = dataReference[i] * 30.0 * nativeHeightRatio;
-				double height = interpolator.interpolate(oldHeight, newHeight, 0.07);
+				double height = interpolator.interpolate(oldHeight, newHeight, timeStep);
 				r.setHeight(height);
 				r.setY((sceneHeight - height) / 2.0);
 			}

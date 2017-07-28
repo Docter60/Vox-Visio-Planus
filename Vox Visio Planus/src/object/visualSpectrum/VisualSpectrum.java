@@ -23,6 +23,7 @@ public abstract class VisualSpectrum implements VoxMediaSpectrumListener, Resize
 	protected double sceneHeight;
 
 	protected static Interpolator interpolator = Interpolator.LINEAR;
+	protected static double timeStep = 0.04;
 	
 	protected Group elements;
 	protected float[] dataReference;

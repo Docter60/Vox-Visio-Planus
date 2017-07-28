@@ -19,9 +19,9 @@ public abstract class VerticalHotSpotPane extends HotSpotPane{
 	@Override
 	public void hotSpotUpdate() {
 		if(this.showPane)
-			this.setTranslateY(interpolator.interpolate(this.getTranslateY(), goUp * this.getHeight(), 0.07));
+			this.setTranslateY(interpolator.interpolate(this.getTranslateY(), goUp * this.getHeight(), 0.035));
 		else
-			this.setTranslateY(interpolator.interpolate(this.getTranslateY(), 0, 0.07));
+			this.setTranslateY(interpolator.interpolate(this.getTranslateY(), 0, 0.035));
 	}
 	
 	public void setMovesUp(boolean goesUp) {

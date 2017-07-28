@@ -34,9 +34,9 @@ public class LinearSpectrum extends VisualSpectrum {
 			if (node instanceof Line) {
 				Line l = ((Line) node);
 				double newStartHeight = sceneHeight - dataReference[i] * 15.0 * nativeHeightRatio;
-				double startHeight = interpolator.interpolate(l.getStartY(), newStartHeight, 0.07);
+				double startHeight = interpolator.interpolate(l.getStartY(), newStartHeight, timeStep);
 				double newEndHeight = sceneHeight - dataReference[i + 1] * 15.0 * nativeHeightRatio;
-				double endHeight = interpolator.interpolate(l.getEndY(), newEndHeight, 0.07);
+				double endHeight = interpolator.interpolate(l.getEndY(), newEndHeight, timeStep);
 				l.setStartY(startHeight);
 				l.setEndY(endHeight);
 			}

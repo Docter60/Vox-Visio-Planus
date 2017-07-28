@@ -168,7 +168,6 @@ public class MediaControl extends Group {
 			@Override
 			public void changed(ObservableValue<?> o, Object obj, Object obj2) {
 				double volume = MediaControl.this.volumeSlider.getValue();
-				System.out.println(volume);
 				MediaControl.this.voxPlayer.setVolume(volume);
 			}
 		});

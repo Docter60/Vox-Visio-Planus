@@ -19,9 +19,9 @@ public abstract class HorizontalHotSpotPane extends HotSpotPane{
 	@Override
 	public void hotSpotUpdate() {
 		if(this.showPane)
-			this.setTranslateX(interpolator.interpolate(this.getTranslateX(), goLeft * this.getWidth(), 0.07));
+			this.setTranslateX(interpolator.interpolate(this.getTranslateX(), goLeft * this.getWidth(), 0.035));
 		else
-			this.setTranslateX(interpolator.interpolate(this.getTranslateX(), 0, 0.07));
+			this.setTranslateX(interpolator.interpolate(this.getTranslateX(), 0, 0.035));
 	}
 	
 	public void setMoveLeft(boolean goesLeft) {

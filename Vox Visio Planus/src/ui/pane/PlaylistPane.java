@@ -12,8 +12,8 @@ import ui.element.PlaylistControl;
  *
  */
 public class PlaylistPane extends HorizontalHotSpotPane {
-	public static final double WIDTH = 200;
-	public static final double HEIGHT = 300;
+	public static final double WIDTH = 300;
+	public static final double HEIGHT = 200;
 	
 	private PlaylistControl playlistControl;
 	
@@ -27,7 +27,7 @@ public class PlaylistPane extends HorizontalHotSpotPane {
 	@Override
 	public void initializeElements() {
 		super.initializeElements();
-		// TODO
+		this.playlistControl.initializeElements(WIDTH, HEIGHT);
 	}
 
 	@Override

@@ -20,9 +20,9 @@ public class VoxPlayer {
 
 	public static final int BANDS = 512;
 	public static final int THRESHOLD = -70;
-	public static final double INTERVAL = 0.01;
+	public static final double INTERVAL = 0.001;
 	
-	private List<VoxMediaInfoListener> infoListeners;
+	private List<SongInfoListener> infoListeners;
 	private List<VoxMediaSpectrumListener> spectrumListeners;
 
 	private MediaPlayer player;
@@ -36,14 +36,14 @@ public class VoxPlayer {
 	private boolean autoPlay;
 
 	public VoxPlayer() {
-		this.infoListeners = new ArrayList<VoxMediaInfoListener>();
+		this.infoListeners = new ArrayList<SongInfoListener>();
 		this.spectrumListeners = new ArrayList<VoxMediaSpectrumListener>();
 		this.currentSongInfo = new String[4];
 		this.volume = 0.5;
 		this.autoPlay = false;
 	}
 	
-	public void addMediaInfoListener(VoxMediaInfoListener vmil) {
+	public void addMediaInfoListener(SongInfoListener vmil) {
 		this.infoListeners.add(vmil);
 	}
 	
@@ -141,7 +141,7 @@ public class VoxPlayer {
 			
 			VoxPlayer.this.currentAlbumCover = vm.getAlbumCover();
 			
-			for(VoxMediaInfoListener vmil : infoListeners)
+			for(SongInfoListener vmil : infoListeners)
 				vmil.onMediaInfoUpdate(info, vm.getAlbumCover());
 		}
 		

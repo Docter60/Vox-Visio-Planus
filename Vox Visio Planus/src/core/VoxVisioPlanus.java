@@ -66,7 +66,7 @@ public class VoxVisioPlanus extends Application {
 
 		voxPlayer = new VoxPlayer();
 		voxPlayer.load(new VoxMedia(INTRO));
-		voxPlayer.setVolume(0.2);
+		voxPlayer.setVolume(0.8);
 
 		visualSpectrumManager = new VisualSpectrumManager(this);
 		visualSpectrumManager.addVisualSpectrumsToScene(root);
@@ -81,15 +81,19 @@ public class VoxVisioPlanus extends Application {
 		primaryStage.heightProperty().addListener((obs, oldHeight, newHeight) -> {
 			VoxVisioPlanus.this.sceneResizeUpdate();
 		});
-		primaryStage.fullScreenProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
-			VoxVisioPlanus.this.sceneResizeUpdate();
+		this.primaryStage.maximizedProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
+			if(iconified)
+				VoxVisioPlanus.this.sceneMaximizedUpdate();
+			else
+				VoxVisioPlanus.this.sceneResizeUpdate();
+			System.out.println(oldValue);
 		});
 
 		// main loop
 		Timeline loop = new Timeline();
 		loop.setCycleCount(Timeline.INDEFINITE);
 
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.01), new EventHandler<ActionEvent>() {
+		KeyFrame kf = new KeyFrame(Duration.seconds(0.005), new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
 				guiManager.hotSpotUpdate();
 				visualSpectrumManager.updateMagnitudeData();
@@ -112,6 +116,12 @@ public class VoxVisioPlanus extends Application {
 		double height = this.primaryStage.getScene().getHeight();
 		for(ResizeListener rl : resizeListeners)
 			rl.resizeUpdate(width, height);
+	}
+	
+	public void sceneMaximizedUpdate() {
+		System.out.println("Hi"); // What the hell...
+		for(ResizeListener rl : resizeListeners)
+			rl.resizeUpdate(1920, 1080);
 	}
 
 	private void configureMnemonics(Scene scene) {
