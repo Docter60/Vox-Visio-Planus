@@ -3,13 +3,11 @@
  */
 package core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import audio.VoxMedia;
 import audio.VoxPlayer;
-import audio.VoxPlaylist;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -26,6 +24,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import window.WindowPane;
+import window.mod.SnapMod;
 
 /**
  * @author Docter60
@@ -83,11 +82,11 @@ public class VoxVisioPlanus extends Application {
 			VoxVisioPlanus.this.sceneResizeUpdate();
 		});
 		this.primaryStage.maximizedProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
-			if(iconified)
+			if(!iconified)
 				VoxVisioPlanus.this.sceneMaximizedUpdate();
 			else
 				VoxVisioPlanus.this.sceneResizeUpdate();
-			System.out.println(oldValue);
+			System.out.println("Maximized");
 		});
 
 		// main loop
@@ -111,6 +110,7 @@ public class VoxVisioPlanus extends Application {
 		// Testing grounds
 		WindowPane wp = new WindowPane(100, 100, 200, 100);
 		root.getChildren().add(wp);
+		SnapMod.setSnappable(wp);
 	}
 	
 	public void sceneResizeUpdate() {
@@ -118,12 +118,15 @@ public class VoxVisioPlanus extends Application {
 		double height = this.primaryStage.getScene().getHeight();
 		for(ResizeListener rl : resizeListeners)
 			rl.resizeUpdate(width, height);
+		SnapMod.updateAllWindowStates();
 	}
 	
 	public void sceneMaximizedUpdate() {
 		System.out.println("Hi"); // What the hell...
 		for(ResizeListener rl : resizeListeners)
-			rl.resizeUpdate(1920, 1080);
+			rl.resizeUpdate(this.primaryStage.getWidth(), this.primaryStage.getHeight());
+		SnapMod.updateAllWindowStates();
+		System.out.println(this.primaryStage.getWidth());
 	}
 
 	private void configureMnemonics(Scene scene) {
@@ -139,7 +142,7 @@ public class VoxVisioPlanus extends Application {
 				new AcceleratorEventHandler() {
 					@Override
 					public void run() {
-						guiManager.toggleDebug();
+						VoxVisioPlanus.this.guiManager.toggleDebug();
 					}
 				});
 		
@@ -148,10 +151,13 @@ public class VoxVisioPlanus extends Application {
 					@Override
 					public void run() {
 						Stage stage = VoxVisioPlanus.this.primaryStage;
-						if(stage.isFullScreen())
+						if(stage.isFullScreen()) {
 							stage.setFullScreen(false);
-						else
+						}
+						else {
 							stage.setFullScreen(true);
+							sceneMaximizedUpdate();
+						}
 					}
 				});
 	}
