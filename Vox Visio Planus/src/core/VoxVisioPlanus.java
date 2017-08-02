@@ -26,7 +26,8 @@ import javafx.util.Duration;
 import window.WindowPane;
 import window.mod.SnapMod;
 
-/**
+/**Testing commit bat
+ * 
  * @author Docter60
  *
  */
