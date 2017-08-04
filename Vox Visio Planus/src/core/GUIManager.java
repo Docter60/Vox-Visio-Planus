@@ -42,7 +42,7 @@ public class GUIManager {
 
 		Scene primaryScene = voxVisioPlanus.getPrimaryStage().getScene();
 		
-		this.singlePlayPane = new SinglePlayPane(primaryScene, this);
+		this.singlePlayPane = new SinglePlayPane(this);
 		this.audioControlPane = new AudioControlPane(primaryScene, voxVisioPlanus.getVoxPlayer());
 		this.playlistPane = new PlaylistPane(primaryScene, voxVisioPlanus.getVoxPlayer());
 		// this.recordPane = new RecordPane();
@@ -51,13 +51,11 @@ public class GUIManager {
 		voxVisioPlanus.getVoxPlayer().addMediaInfoListener(songInfoPane);
 
 		this.hotSpotPanes = new ArrayList<HotSpotPane>();
-		this.hotSpotPanes.add(singlePlayPane);
 		this.hotSpotPanes.add(audioControlPane);
 		this.hotSpotPanes.add(playlistPane);
-		
+		((Group) primaryScene.getRoot()).getChildren().add(this.singlePlayPane);
 		this.hotSpotPanes.add(songInfoPane);
 		
-		voxVisioPlanus.addResizeListener(singlePlayPane);
 		voxVisioPlanus.addResizeListener(audioControlPane);
 		voxVisioPlanus.addResizeListener(playlistPane);
 		voxVisioPlanus.addResizeListener(songInfoPane);

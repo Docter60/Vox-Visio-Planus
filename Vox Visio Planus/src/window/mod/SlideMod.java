@@ -15,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -50,6 +51,7 @@ public class SlideMod {
 
 	private WindowPositionListener windowPositionListener;
 	private WindowSizeListener windowSizeListener;
+	private SceneChangeListener sceneChangeListener;
 
 	private double showX;
 	private double showY;
@@ -70,6 +72,7 @@ public class SlideMod {
 		borderPane.prefWidthProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
 		borderPane.layoutYProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
 		borderPane.prefHeightProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
+		wp.getMainPane().sceneProperty().removeListener(listenerHandles.get(wp).sceneChangeListener);
 		wp.getChildren().remove(listenerHandles.get(wp).lockButton);
 		listenerHandles.remove(wp);
 	}
@@ -97,10 +100,13 @@ public class SlideMod {
 
 		this.windowPositionListener = new WindowPositionListener();
 		this.windowSizeListener = new WindowSizeListener();
+		this.sceneChangeListener = new SceneChangeListener();
 		this.mainPane.prefWidthProperty().addListener(windowSizeListener);
 		this.mainPane.prefHeightProperty().addListener(windowSizeListener);
 		this.mainPane.layoutXProperty().addListener(windowPositionListener);
 		this.mainPane.layoutYProperty().addListener(windowPositionListener);
+		
+		wp.getMainPane().sceneProperty().addListener(this.sceneChangeListener);
 
 		this.wp.getChildren().add(lockButton);
 	}
@@ -113,7 +119,6 @@ public class SlideMod {
 	private Slide getState() {
 		Slide slideState = Slide.DEFAULT;
 		Snap snapState = SnapMod.getSnapState(wp);
-
 		if (snapState == Snap.NW_SNAP || snapState == Snap.N_SNAP || snapState == Snap.NE_SNAP)
 			slideState = Slide.N_SLIDE;
 		else if (snapState == Snap.SW_SNAP || snapState == Snap.S_SNAP || snapState == Snap.SE_SNAP)
@@ -122,6 +127,7 @@ public class SlideMod {
 			slideState = Slide.W_SLIDE;
 		else if (snapState == Snap.E_SNAP)
 			slideState = Slide.E_SLIDE;
+		//System.out.println(slideState);
 		return slideState;
 	}
 
@@ -232,6 +238,26 @@ public class SlideMod {
 		this.lockButton.setLayoutX(this.mainPane.getLayoutX() + width - 2 * this.lockButton.getWidth() - 2);
 		this.lockButton.setLayoutY(this.mainPane.getLayoutY() + 2);
 	}
+	
+	public static HashMap<WindowPane, SlideMod> getListenerHandles() {
+		return listenerHandles;
+	}
+
+	public double getShowX() {
+		return showX;
+	}
+
+	public double getShowY() {
+		return showY;
+	}
+
+	public double getHideX() {
+		return hideX;
+	}
+
+	public double getHideY() {
+		return hideY;
+	}
 
 	private class LockListener implements EventHandler<ActionEvent> {
 		@Override
@@ -293,6 +319,16 @@ public class SlideMod {
 				hotSpot.setHeight(newHeight);
 				hotSpot.setLayoutX(showX);
 				hotSpot.setLayoutY(showY);
+			}
+		}
+	}
+	
+	private class SceneChangeListener implements ChangeListener<Scene> {
+		@Override
+		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
+			if(SlideMod.this.getState() != Slide.DEFAULT) {
+				System.out.println("Fire");
+				SlideMod.this.lockButton.fire();
 			}
 		}
 	}

@@ -60,6 +60,7 @@ public class SnapMod {
 	public static void setUnsnappable(WindowPane wp) {
 		wp.getMainPane().layoutXProperty().removeListener(listenerHandles.get(wp).xListener);
 		wp.getMainPane().layoutYProperty().removeListener(listenerHandles.get(wp).yListener);
+		wp.getMainPane().sceneProperty().removeListener(listenerHandles.get(wp).sceneChangeListener);
 		listenerHandles.remove(wp);
 	}
 	
@@ -156,6 +157,8 @@ public class SnapMod {
 			SnapMod.this.scene = newVal;
 			SnapMod.this.wp.getMainPane().layoutXProperty().addListener(SnapMod.this.xListener);
 			SnapMod.this.wp.getMainPane().layoutYProperty().addListener(SnapMod.this.yListener);
+			SnapMod.this.currentWindowState();
+			SnapMod.this.handleWindowState();
 		}
 	}
 
