@@ -48,7 +48,8 @@ public class SlideMod {
 	private Slide state;
 	private HotSpot hotSpot;
 
-	private WindowListener windowListener;
+	private WindowPositionListener windowPositionListener;
+	private WindowSizeListener windowSizeListener;
 
 	private double showX;
 	private double showY;
@@ -65,10 +66,10 @@ public class SlideMod {
 
 	public static void setUnslideable(WindowPane wp) {
 		Pane borderPane = wp.getMainPane();
-		borderPane.layoutXProperty().removeListener(listenerHandles.get(wp).windowListener);
-		borderPane.prefWidthProperty().removeListener(listenerHandles.get(wp).windowListener);
-		borderPane.layoutYProperty().removeListener(listenerHandles.get(wp).windowListener);
-		borderPane.prefHeightProperty().removeListener(listenerHandles.get(wp).windowListener);
+		borderPane.layoutXProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
+		borderPane.prefWidthProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
+		borderPane.layoutYProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
+		borderPane.prefHeightProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
 		wp.getChildren().remove(listenerHandles.get(wp).lockButton);
 		listenerHandles.remove(wp);
 	}
@@ -94,11 +95,12 @@ public class SlideMod {
 		this.lockButton.setOnAction(new LockListener());
 		this.state = getState();
 
-		this.windowListener = new WindowListener();
-		this.mainPane.prefWidthProperty().addListener(windowListener);
-		this.mainPane.prefHeightProperty().addListener(windowListener);
-		this.mainPane.layoutXProperty().addListener(windowListener);
-		this.mainPane.layoutYProperty().addListener(windowListener);
+		this.windowPositionListener = new WindowPositionListener();
+		this.windowSizeListener = new WindowSizeListener();
+		this.mainPane.prefWidthProperty().addListener(windowSizeListener);
+		this.mainPane.prefHeightProperty().addListener(windowSizeListener);
+		this.mainPane.layoutXProperty().addListener(windowPositionListener);
+		this.mainPane.layoutYProperty().addListener(windowPositionListener);
 
 		this.wp.getChildren().add(lockButton);
 	}
@@ -225,6 +227,12 @@ public class SlideMod {
 		node.setOnMouseExited(null);
 	}
 
+	private void refreshLockButton() {
+		double width = SlideMod.this.mainPane.getPrefWidth();
+		this.lockButton.setLayoutX(this.mainPane.getLayoutX() + width - 2 * this.lockButton.getWidth() - 2);
+		this.lockButton.setLayoutY(this.mainPane.getLayoutY() + 2);
+	}
+
 	private class LockListener implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent e) {
@@ -257,12 +265,35 @@ public class SlideMod {
 		}
 	}
 
-	private class WindowListener implements ChangeListener<Number> {
+	private class WindowPositionListener implements ChangeListener<Number> {
 		@Override
 		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
-			SlideMod.this.lockButton.setLayoutX(SlideMod.this.mainPane.getLayoutX()
-					+ SlideMod.this.mainPane.getPrefWidth() - 2 * SlideMod.this.lockButton.getWidth() - 2);
-			SlideMod.this.lockButton.setLayoutY(SlideMod.this.mainPane.getLayoutY() + 2);
+			SlideMod.this.refreshLockButton();
+		}
+	}
+
+	private class WindowSizeListener implements ChangeListener<Number> {
+		@Override
+		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
+			SlideMod.this.refreshLockButton();
+
+			double newWidth = SlideMod.this.mainPane.getPrefWidth();
+			double newHeight = SlideMod.this.mainPane.getPrefHeight();
+
+			if(SlideMod.this.isLocked) {
+				SlideMod.this.lockButton.fire();
+			}
+			
+			if(SlideMod.this.hotSpot != null) {
+				SlideMod.this.wp.setLayoutX(showX);
+				SlideMod.this.wp.setLayoutY(showY);
+				SlideMod.this.configureSlideValues();
+				HotSpot hotSpot = SlideMod.this.hotSpot;
+				hotSpot.setWidth(newWidth);
+				hotSpot.setHeight(newHeight);
+				hotSpot.setLayoutX(showX);
+				hotSpot.setLayoutY(showY);
+			}
 		}
 	}
 }
