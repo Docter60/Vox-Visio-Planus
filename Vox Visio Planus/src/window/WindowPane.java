@@ -17,6 +17,8 @@ import window.mod.CloseMod;
 import window.mod.DragMod;
 import window.mod.ResizeMod;
 import window.mod.RestoreMod;
+import window.mod.SlideMod;
+import window.mod.SnapMod;
 
 /**
  * @author Docter60
@@ -58,6 +60,7 @@ public class WindowPane extends Group {
 		
 		this.setDraggable(true);
 		this.setResizeable(true);
+		this.setSnappable(true);
 		this.hasCloseButton(true);
 	}
 	
@@ -87,6 +90,20 @@ public class WindowPane extends Group {
 			ResizeMod.makeResizable(mainPane);
 		else
 			ResizeMod.makeUnresizeable(mainPane);
+	}
+	
+	public void setSnappable(boolean isSnappable) {
+		if(isSnappable)
+			SnapMod.setSnappable(this);
+		else
+			SnapMod.setUnsnappable(this);
+	}
+	
+	public void setSlideable(boolean isSlideable) {
+		if(isSlideable)
+			SlideMod.setSlideable(this);
+		else
+			SlideMod.setUnslideable(this);
 	}
 	
 	public void hasCloseButton(boolean hasCloseButton) {

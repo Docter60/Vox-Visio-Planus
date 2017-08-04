@@ -105,6 +105,5 @@ public class CloseMod {
 			windowPane.setVisible(false);
 			windowPane.toBack();
 		}
-		
 	}
 }

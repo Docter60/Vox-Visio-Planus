@@ -23,7 +23,7 @@ public class SnapMod {
 
 	private static HashMap<WindowPane, SnapMod> listenerHandles = new HashMap<WindowPane, SnapMod>();
 
-	private static enum Snap {
+	public static enum Snap {
 		DEFAULT, NW_SNAP, NE_SNAP, SW_SNAP, SE_SNAP, W_SNAP, N_SNAP, E_SNAP, S_SNAP
 	};
 
@@ -32,18 +32,24 @@ public class SnapMod {
 	private Scene scene;
 	private WindowPane wp;
 
+	private SceneChangeListener sceneChangeListener;
 	private XListener xListener;
 	private YListener yListener;
 
 	private SnapMod(WindowPane wp) {
 		this.wp = wp;
-		this.scene = wp.getScene();
 
+		this.sceneChangeListener = new SceneChangeListener();
 		this.xListener = new XListener();
 		this.yListener = new YListener();
+		
+		if(this.wp.getScene() != null) {
+			this.scene = wp.getScene();
+			this.wp.getMainPane().layoutXProperty().addListener(SnapMod.this.xListener);
+			this.wp.getMainPane().layoutYProperty().addListener(SnapMod.this.yListener);
+		}
 
-		wp.getMainPane().layoutXProperty().addListener(this.xListener);
-		wp.getMainPane().layoutYProperty().addListener(this.yListener);
+		wp.getMainPane().sceneProperty().addListener(this.sceneChangeListener);
 	}
 
 	public static void setSnappable(WindowPane wp) {
@@ -55,6 +61,10 @@ public class SnapMod {
 		wp.getMainPane().layoutXProperty().removeListener(listenerHandles.get(wp).xListener);
 		wp.getMainPane().layoutYProperty().removeListener(listenerHandles.get(wp).yListener);
 		listenerHandles.remove(wp);
+	}
+	
+	public static Snap getSnapState(WindowPane wp) {
+		return listenerHandles.get(wp).state;
 	}
 
 	private void currentWindowState() {
@@ -137,13 +147,15 @@ public class SnapMod {
 	}
 
 	private boolean intersect(double side, double point) {
-		return side + MARGIN > point && side - MARGIN < point; // May need to
-																// alter this
+		return side + MARGIN > point && side - MARGIN < point;
 	}
 	
-	public static void updateAllWindowStates() {
-		for(SnapMod sm : listenerHandles.values()) {
-			sm.handleWindowState();
+	private class SceneChangeListener implements ChangeListener<Scene> {
+		@Override
+		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
+			SnapMod.this.scene = newVal;
+			SnapMod.this.wp.getMainPane().layoutXProperty().addListener(SnapMod.this.xListener);
+			SnapMod.this.wp.getMainPane().layoutYProperty().addListener(SnapMod.this.yListener);
 		}
 	}
 

@@ -24,7 +24,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import window.WindowPane;
-import window.mod.SnapMod;
 
 /**Testing commit bat
  * 
@@ -111,7 +110,8 @@ public class VoxVisioPlanus extends Application {
 		// Testing grounds
 		WindowPane wp = new WindowPane(100, 100, 200, 100);
 		root.getChildren().add(wp);
-		SnapMod.setSnappable(wp);
+		wp.setSnappable(true);
+		wp.setSlideable(true);
 	}
 	
 	public void sceneResizeUpdate() {
@@ -119,14 +119,12 @@ public class VoxVisioPlanus extends Application {
 		double height = this.primaryStage.getScene().getHeight();
 		for(ResizeListener rl : resizeListeners)
 			rl.resizeUpdate(width, height);
-		SnapMod.updateAllWindowStates();
 	}
 	
 	public void sceneMaximizedUpdate() {
 		System.out.println("Hi"); // What the hell...
 		for(ResizeListener rl : resizeListeners)
 			rl.resizeUpdate(this.primaryStage.getWidth(), this.primaryStage.getHeight());
-		SnapMod.updateAllWindowStates();
 		System.out.println(this.primaryStage.getWidth());
 	}
 
