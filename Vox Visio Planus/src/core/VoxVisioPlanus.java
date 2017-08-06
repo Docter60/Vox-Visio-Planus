@@ -3,11 +3,11 @@
  */
 package core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import audio.VoxMedia;
-import audio.VoxPlayer;
+import audio.SpectrumMediaPlayer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -19,13 +19,15 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.media.Media;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import window.WindowPane;
+import object.visualSpectrum.AudioBarVisualizer;
 
-/**Testing commit bat
+/**
+ * TODO : GUI Revamp, Debug mode
  * 
  * @author Docter60
  *
@@ -37,11 +39,10 @@ public class VoxVisioPlanus extends Application {
 	public static final int STAGE_HEIGHT = (int) SCREEN_BOUNDS.getHeight() / 2;
 
 	private List<ResizeListener> resizeListeners;
-	
-	private VoxPlayer voxPlayer;
-	private VisualSpectrumManager visualSpectrumManager;
+
+	private SpectrumMediaPlayer spectrumMediaPlayer;
 	private GUIManager guiManager;
-	
+
 	private Stage primaryStage;
 
 	public static void main(String[] args) {
@@ -64,30 +65,12 @@ public class VoxVisioPlanus extends Application {
 
 		primaryStage.setScene(scene);
 
-		voxPlayer = new VoxPlayer();
-		voxPlayer.load(new VoxMedia(INTRO));
-		voxPlayer.setVolume(0.8);
-
-		visualSpectrumManager = new VisualSpectrumManager(this);
-		visualSpectrumManager.addVisualSpectrumsToScene(root);
+		spectrumMediaPlayer = new SpectrumMediaPlayer();
+		spectrumMediaPlayer.setMedia(new Media(new File(INTRO).toURI().toString()));
+		spectrumMediaPlayer.setVolume(0.8);
 
 		guiManager = new GUIManager(this);
 		guiManager.addGUIToScene(root);
-
-		// Listening to window resize events
-		primaryStage.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-			VoxVisioPlanus.this.sceneResizeUpdate();
-		});
-		primaryStage.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-			VoxVisioPlanus.this.sceneResizeUpdate();
-		});
-		this.primaryStage.maximizedProperty().addListener((obs, oldValue, iconified) -> { // Not getting new width and height values
-			if(!iconified)
-				VoxVisioPlanus.this.sceneMaximizedUpdate();
-			else
-				VoxVisioPlanus.this.sceneResizeUpdate();
-			System.out.println("Maximized");
-		});
 
 		// main loop
 		Timeline loop = new Timeline();
@@ -96,83 +79,58 @@ public class VoxVisioPlanus extends Application {
 		KeyFrame kf = new KeyFrame(Duration.seconds(0.005), new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
 				guiManager.hotSpotUpdate();
-				visualSpectrumManager.updateMagnitudeData();
 			}
 		});
 
 		loop.getKeyFrames().add(kf);
 		loop.play();
 
+		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(scene, spectrumMediaPlayer, 128);
+		audioBarVisualizer.getEffectsKit().setFillRainbow();
+		audioBarVisualizer.getEffectsKit().setGlow(1.0);
+
 		primaryStage.show();
 
 		guiManager.initializePanes();
-		
-		// Testing grounds
-		WindowPane wp = new WindowPane(100, 100, 200, 100);
-		root.getChildren().add(wp);
-		wp.setSnappable(true);
-		wp.setSlideable(true);
 	}
-	
-	public void sceneResizeUpdate() {
-		double width = this.primaryStage.getScene().getWidth();
-		double height = this.primaryStage.getScene().getHeight();
-		for(ResizeListener rl : resizeListeners)
-			rl.resizeUpdate(width, height);
+
+	public SpectrumMediaPlayer getSpectrumMediaPlayer() {
+		return spectrumMediaPlayer;
 	}
-	
-	public void sceneMaximizedUpdate() {
-		System.out.println("Hi"); // What the hell...
-		for(ResizeListener rl : resizeListeners)
-			rl.resizeUpdate(this.primaryStage.getWidth(), this.primaryStage.getHeight());
-		System.out.println(this.primaryStage.getWidth());
+
+	private void toggleFullscreen() {
+		if (primaryStage.isFullScreen()) {
+			primaryStage.setFullScreen(false);
+		} else {
+			primaryStage.setFullScreen(true);
+		}
 	}
 
 	private void configureMnemonics(Scene scene) {
-		scene.getAccelerators().put(new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN),
-				new AcceleratorEventHandler() {
-					@Override
-					public void run() {
-						VoxVisioPlanus.this.guiManager.showOpenDialog();
-					}
-				});
+		setMnemonic(scene, KeyCode.O, new AcceleratorEventHandler() {
+			@Override
+			public void run() { VoxVisioPlanus.this.guiManager.showOpenDialog(); }
+			});
 		
-		scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F3, KeyCombination.SHORTCUT_DOWN),
-				new AcceleratorEventHandler() {
-					@Override
-					public void run() {
-						VoxVisioPlanus.this.guiManager.toggleDebug();
-					}
-				});
-		
-		scene.getAccelerators().put(new KeyCodeCombination(KeyCode.F4, KeyCombination.SHORTCUT_DOWN),
-				new AcceleratorEventHandler() {
-					@Override
-					public void run() {
-						Stage stage = VoxVisioPlanus.this.primaryStage;
-						if(stage.isFullScreen()) {
-							stage.setFullScreen(false);
-						}
-						else {
-							stage.setFullScreen(true);
-							sceneMaximizedUpdate();
-						}
-					}
-				});
+		setMnemonic(scene, KeyCode.F3, new AcceleratorEventHandler() {
+			@Override
+			public void run() { VoxVisioPlanus.this.guiManager.toggleDebug(); }
+			});
+
+		setMnemonic(scene, KeyCode.F4, new AcceleratorEventHandler() {
+			@Override
+			public void run() { toggleFullscreen(); }
+			});
 	}
-	
+
+	private void setMnemonic(Scene scene, KeyCode keyCode, AcceleratorEventHandler aev) {
+		scene.getAccelerators().put(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN), aev);
+	}
+
 	public void addResizeListener(ResizeListener rl) {
 		resizeListeners.add(rl);
 	}
-	
-	public VoxPlayer getVoxPlayer() {
-		return this.voxPlayer;
-	}
-	
-	public VisualSpectrumManager getVisualSpectrumManager() {
-		return this.visualSpectrumManager;
-	}
-	
+
 	public Stage getPrimaryStage() {
 		return this.primaryStage;
 	}

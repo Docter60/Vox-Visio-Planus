@@ -3,7 +3,7 @@
  */
 package ui.element;
 
-import audio.VoxPlayer;
+import audio.SpectrumMediaPlayer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -39,11 +39,11 @@ public class MediaControl extends Group {
 	
 	private Slider volumeSlider;
 	
-	private VoxPlayer voxPlayer;
+	private SpectrumMediaPlayer spectrumMediaPlayer;
 	
-	public MediaControl(VoxPlayer voxPlayer) {
+	public MediaControl(SpectrumMediaPlayer spectrumMediaPlayer) {
 		super();
-		this.voxPlayer = voxPlayer;
+		this.spectrumMediaPlayer = spectrumMediaPlayer;
 		initializeControls();
 		configureControls();
 	}
@@ -105,6 +105,7 @@ public class MediaControl extends Group {
 		this.volumeSlider.setMin(0.0);
 		this.volumeSlider.setMax(1.0);
 		this.volumeSlider.setValue(0.8);
+		this.getChildren().add(this.volumeSlider);
 	}
 	
 	public Slider getVolumeSlider() {
@@ -122,19 +123,19 @@ public class MediaControl extends Group {
 		this.rewindButton.setOnAction(new AudioControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				MediaControl.this.voxPlayer.quickSeek(false);
+				MediaControl.this.spectrumMediaPlayer.quickSeek(false);
 			}
 		});
 		
 		this.playPauseButton.setOnAction(new AudioControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				if(MediaControl.this.voxPlayer.isPlaying()) {
+				if(MediaControl.this.spectrumMediaPlayer.isPlaying()) {
 					MediaControl.this.playPauseButton.setGraphic(playImage);
-					MediaControl.this.voxPlayer.pause();
+					MediaControl.this.spectrumMediaPlayer.pause();
 				} else {
 					MediaControl.this.playPauseButton.setGraphic(pauseImage);
-					MediaControl.this.voxPlayer.play();
+					MediaControl.this.spectrumMediaPlayer.play();
 				}
 			}
 		});
@@ -143,14 +144,14 @@ public class MediaControl extends Group {
 			@Override
 			public void handle(ActionEvent e) {
 				MediaControl.this.playPauseButton.setGraphic(playImage);
-				MediaControl.this.voxPlayer.stop();
+				MediaControl.this.spectrumMediaPlayer.stop();
 			}
 		});
 		
 		this.fastForwardButton.setOnAction(new AudioControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				MediaControl.this.voxPlayer.quickSeek(true);
+				MediaControl.this.spectrumMediaPlayer.quickSeek(true);
 			}
 		});
 		
@@ -167,7 +168,7 @@ public class MediaControl extends Group {
 			@Override
 			public void changed(ObservableValue<?> o, Object obj, Object obj2) {
 				double volume = MediaControl.this.volumeSlider.getValue();
-				MediaControl.this.voxPlayer.setVolume(volume);
+				MediaControl.this.spectrumMediaPlayer.setVolume(volume);
 			}
 		});
 	}

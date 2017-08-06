@@ -3,14 +3,15 @@
  */
 package core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import asset.dialog.OpenFileDialog;
-import audio.VoxMedia;
-import audio.VoxPlayer;
+import audio.SpectrumMediaPlayer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
 import ui.pane.AudioControlPane;
 import ui.pane.HotSpotPane;
 import ui.pane.PlaylistPane;
@@ -43,21 +44,20 @@ public class GUIManager {
 		Scene primaryScene = voxVisioPlanus.getPrimaryStage().getScene();
 		
 		this.singlePlayPane = new SinglePlayPane(this);
-		this.audioControlPane = new AudioControlPane(primaryScene, voxVisioPlanus.getVoxPlayer());
-		this.playlistPane = new PlaylistPane(primaryScene, voxVisioPlanus.getVoxPlayer());
+		this.audioControlPane = new AudioControlPane(primaryScene, voxVisioPlanus.getSpectrumMediaPlayer());
+		this.playlistPane = new PlaylistPane(primaryScene, voxVisioPlanus.getSpectrumMediaPlayer());
 		// this.recordPane = new RecordPane();
 		this.songInfoPane = new SongInfoPane(primaryScene);
 		
-		voxVisioPlanus.getVoxPlayer().addMediaInfoListener(songInfoPane);
+		voxVisioPlanus.getSpectrumMediaPlayer().addMediaChangedListener(songInfoPane);
 
 		this.hotSpotPanes = new ArrayList<HotSpotPane>();
-		this.hotSpotPanes.add(audioControlPane);
-		this.hotSpotPanes.add(playlistPane);
+
 		((Group) primaryScene.getRoot()).getChildren().add(this.singlePlayPane);
+		((Group) primaryScene.getRoot()).getChildren().add(this.audioControlPane);
+		((Group) primaryScene.getRoot()).getChildren().add(this.playlistPane);
 		this.hotSpotPanes.add(songInfoPane);
-		
-		voxVisioPlanus.addResizeListener(audioControlPane);
-		voxVisioPlanus.addResizeListener(playlistPane);
+
 		voxVisioPlanus.addResizeListener(songInfoPane);
 
 		this.openFileDialog = new OpenFileDialog(voxVisioPlanus.getPrimaryStage());
@@ -83,8 +83,9 @@ public class GUIManager {
 	public void showOpenDialog() {
 		openFileDialog.showDialog(OpenFileDialog.AUDIO_FILE);
 		if (openFileDialog.getPathToFile() != null) {
-			VoxPlayer vp = this.voxVisioPlanus.getVoxPlayer();
-			vp.load(new VoxMedia(openFileDialog.getPathToFile()));
+			SpectrumMediaPlayer smp = voxVisioPlanus.getSpectrumMediaPlayer();
+			String path = new File(openFileDialog.getPathToFile()).toURI().toString();
+			smp.setMedia(new Media(path));
 			openFileDialog.clearPathToFile();
 		}
 	}

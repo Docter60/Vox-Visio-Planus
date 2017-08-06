@@ -7,6 +7,7 @@ import core.GUIManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import window.WindowPane;
 import window.mod.SlideMod;
 
@@ -15,7 +16,7 @@ import window.mod.SlideMod;
  *
  */
 public class SinglePlayPane extends WindowPane {
-	public static final double WIDTH = 100;
+	public static final double WIDTH = 120;
 	public static final double HEIGHT = 50;
 	
 	private GUIManager guiManager;
@@ -31,6 +32,8 @@ public class SinglePlayPane extends WindowPane {
 		this.openButton.setLayoutY(this.mainPane.getHeight() - this.openButton.getHeight() - 3.0);
 		this.mainPane.setCenter(openButton);
 		
+		this.setRestoreShortcut(KeyCode.DIGIT1);
+		this.setResizeable(false);
 		this.setSlideable(true);
 		
 		double initX = SlideMod.getListenerHandles().get(this).getHideX();

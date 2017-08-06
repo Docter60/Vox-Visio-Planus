@@ -127,7 +127,6 @@ public class SlideMod {
 			slideState = Slide.W_SLIDE;
 		else if (snapState == Snap.E_SNAP)
 			slideState = Slide.E_SLIDE;
-		//System.out.println(slideState);
 		return slideState;
 	}
 
@@ -327,7 +326,6 @@ public class SlideMod {
 		@Override
 		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
 			if(SlideMod.this.getState() != Slide.DEFAULT) {
-				System.out.println("Fire");
 				SlideMod.this.lockButton.fire();
 			}
 		}

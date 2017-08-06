@@ -5,6 +5,9 @@ package window.mod;
 
 import java.util.HashMap;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -21,11 +24,13 @@ public class RestoreMod {
 	private WindowPane wp;
 	private KeyCode kc;
 	private KeyCodeCombination keyCodeCombination;
+	private SceneChangeListener sceneChangeListener;
 	
 	public RestoreMod(WindowPane wp, KeyCode kc) {
 		this.wp = wp;
 		this.kc = kc;
-		createAccelerator();
+		this.sceneChangeListener = new SceneChangeListener();
+		wp.getMainPane().sceneProperty().addListener(this.sceneChangeListener);
 	}
 	
 	public static void createRestoreMod(WindowPane wp, KeyCode kc) {
@@ -49,8 +54,15 @@ public class RestoreMod {
 				RestoreMod.this.wp.setVisible(false);
 			} else {
 				RestoreMod.this.wp.setVisible(true);
+				RestoreMod.this.wp.toFront();
 			}
 		}
 	}
 	
+	private class SceneChangeListener implements ChangeListener<Scene> {
+		@Override
+		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
+			RestoreMod.this.createAccelerator();
+		}
+	}
 }

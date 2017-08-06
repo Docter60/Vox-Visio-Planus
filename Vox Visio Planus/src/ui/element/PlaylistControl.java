@@ -1,6 +1,6 @@
 package ui.element;
 
-import audio.VoxPlayer;
+import audio.SpectrumMediaPlayer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -21,11 +21,11 @@ public class PlaylistControl extends Group {
 	private Button swapButton;
 	private ToggleButton shuffleToggle;
 	
-	private VoxPlayer voxPlayer;
+	private SpectrumMediaPlayer spectrumMediaPlayer;
 	
-	public PlaylistControl(VoxPlayer voxPlayer) {
+	public PlaylistControl(SpectrumMediaPlayer spectrumMediaPlayer) {
 		super();
-		this.voxPlayer = voxPlayer;
+		this.spectrumMediaPlayer = spectrumMediaPlayer;
 		initializeControls();
 		configureControls();
 	}
@@ -121,7 +121,7 @@ public class PlaylistControl extends Group {
 		this.removeButton.relocate(startXPos + BUTTON_FIT_WIDTH, 70);
 		this.addFolderButton.relocate(startXPos + BUTTON_FIT_WIDTH, 40);
 		this.swapButton.relocate(startXPos, 70);
-		this.shuffleToggle.relocate(startXPos + BUTTON_FIT_WIDTH + 10, height - BUTTON_FIT_HEIGHT - 10);
+		this.shuffleToggle.relocate(startXPos + BUTTON_FIT_WIDTH + 10, height - BUTTON_FIT_HEIGHT - 20);
 	}
 	
 	private class PlaylistControlEventHandler implements EventHandler<ActionEvent> {

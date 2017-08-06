@@ -3,7 +3,7 @@
  */
 package ui.pane;
 
-import audio.SongInfoListener;
+import audio.MediaChangedListener;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
  * @author Docter60
  *
  */
-public class SongInfoPane extends VerticalHotSpotPane implements SongInfoListener {
+public class SongInfoPane extends VerticalHotSpotPane implements MediaChangedListener {
 	public static final String AUDIO_CONTROL_RES = "file:res/texture/infoPane/";
 	public static final double WIDTH = 300;
 	public static final double HEIGHT = 100;
@@ -74,7 +74,7 @@ public class SongInfoPane extends VerticalHotSpotPane implements SongInfoListene
 	}
 
 	@Override
-	public void onMediaInfoUpdate(String[] info, Image albumCover) {
+	public void changed(String[] info, Image albumCover) {
 		if (info[0] != null)
 			this.title.setText(info[0]);
 		else

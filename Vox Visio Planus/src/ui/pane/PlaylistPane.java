@@ -3,38 +3,30 @@
  */
 package ui.pane;
 
-import audio.VoxPlayer;
+import audio.SpectrumMediaPlayer;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import ui.element.PlaylistControl;
+import window.WindowPane;
 
 /**
  * @author Docter60
  *
  */
-public class PlaylistPane extends HorizontalHotSpotPane {
+public class PlaylistPane extends WindowPane {
 	public static final double WIDTH = 300;
 	public static final double HEIGHT = 200;
 	
 	private PlaylistControl playlistControl;
 	
-	public PlaylistPane(Scene primaryScene, VoxPlayer voxPlayer) {
-		super("Playlist", 0, primaryScene.getHeight() - HEIGHT, WIDTH, HEIGHT);
-		this.relocate(-WIDTH, primaryScene.getHeight() - HEIGHT);
-		this.playlistControl = new PlaylistControl(voxPlayer);
-		this.getChildren().add(playlistControl);
-	}
-
-	@Override
-	public void initializeElements() {
-		super.initializeElements();
+	public PlaylistPane(Scene primaryScene, SpectrumMediaPlayer spectrumMediaPlayer) {
+		super(0, primaryScene.getHeight() - HEIGHT, WIDTH, HEIGHT, "Playlist");
+		this.playlistControl = new PlaylistControl(spectrumMediaPlayer);
 		this.playlistControl.initializeElements(WIDTH, HEIGHT);
+		this.mainPane.setCenter(playlistControl);
+		
+		this.setRestoreShortcut(KeyCode.P);
+		this.setResizeable(false);
+		this.setSlideable(true);
 	}
-
-	@Override
-	public void resizeUpdate(double newSceneWidth, double newSceneHeight) {
-		double newY = newSceneHeight - HEIGHT;
-		this.relocate(-WIDTH, newY);
-		this.hotSpot.relocate(0, newY);
-	}
-
 }
