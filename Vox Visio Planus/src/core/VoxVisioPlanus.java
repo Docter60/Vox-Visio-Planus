@@ -4,15 +4,9 @@
 package core;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import audio.SpectrumMediaPlayer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -23,22 +17,19 @@ import javafx.scene.media.Media;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import object.visualSpectrum.AudioBarVisualizer;
+import object.visualSpectrum.AudioLinearVisualizer;
 
 /**
- * TODO : GUI Revamp, Debug mode
+ * 
  * 
  * @author Docter60
- *
  */
 public class VoxVisioPlanus extends Application {
 	public static final String INTRO = "./res/audio/VoxVisioPlanusTheme.mp3";
 	public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
-	public static final int STAGE_WIDTH = (int) SCREEN_BOUNDS.getWidth() / 2;
-	public static final int STAGE_HEIGHT = (int) SCREEN_BOUNDS.getHeight() / 2;
-
-	private List<ResizeListener> resizeListeners;
+	public static final double STAGE_WIDTH = SCREEN_BOUNDS.getWidth() / 2.0;
+	public static final double STAGE_HEIGHT = SCREEN_BOUNDS.getHeight() / 2.0;
 
 	private SpectrumMediaPlayer spectrumMediaPlayer;
 	private GUIManager guiManager;
@@ -52,7 +43,6 @@ public class VoxVisioPlanus extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.resizeListeners = new ArrayList<ResizeListener>();
 		primaryStage.setTitle("Vox Visio Planus");
 		primaryStage.setX(STAGE_WIDTH / 2);
 		primaryStage.setY(STAGE_HEIGHT / 2);
@@ -70,28 +60,16 @@ public class VoxVisioPlanus extends Application {
 		spectrumMediaPlayer.setVolume(0.8);
 
 		guiManager = new GUIManager(this);
-		guiManager.addGUIToScene(root);
-
-		// main loop
-		Timeline loop = new Timeline();
-		loop.setCycleCount(Timeline.INDEFINITE);
-
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.005), new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				guiManager.hotSpotUpdate();
-			}
-		});
-
-		loop.getKeyFrames().add(kf);
-		loop.play();
 
 		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(scene, spectrumMediaPlayer, 128);
 		audioBarVisualizer.getEffectsKit().setFillRainbow();
 		audioBarVisualizer.getEffectsKit().setGlow(1.0);
+		
+		AudioLinearVisualizer linearSpectrum = new AudioLinearVisualizer(scene, spectrumMediaPlayer, 128);
+		linearSpectrum.getEffectsKit().setStrokeRainbow();
+		linearSpectrum.getEffectsKit().setGlow(1.0);
 
 		primaryStage.show();
-
-		guiManager.initializePanes();
 	}
 
 	public SpectrumMediaPlayer getSpectrumMediaPlayer() {
@@ -105,40 +83,33 @@ public class VoxVisioPlanus extends Application {
 			primaryStage.setFullScreen(true);
 		}
 	}
+	
+	private void toggleDebugMode() {
+		// TODO Handling Toggle debug mode
+	}
 
 	private void configureMnemonics(Scene scene) {
-		setMnemonic(scene, KeyCode.O, new AcceleratorEventHandler() {
+		setMnemonic(scene, KeyCode.O, new Runnable() {
 			@Override
 			public void run() { VoxVisioPlanus.this.guiManager.showOpenDialog(); }
 			});
 		
-		setMnemonic(scene, KeyCode.F3, new AcceleratorEventHandler() {
+		setMnemonic(scene, KeyCode.F3, new Runnable() {
 			@Override
-			public void run() { VoxVisioPlanus.this.guiManager.toggleDebug(); }
+			public void run() { VoxVisioPlanus.this.toggleDebugMode(); }
 			});
 
-		setMnemonic(scene, KeyCode.F4, new AcceleratorEventHandler() {
+		setMnemonic(scene, KeyCode.F4, new Runnable() {
 			@Override
-			public void run() { toggleFullscreen(); }
+			public void run() { VoxVisioPlanus.this.toggleFullscreen(); }
 			});
 	}
 
-	private void setMnemonic(Scene scene, KeyCode keyCode, AcceleratorEventHandler aev) {
-		scene.getAccelerators().put(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN), aev);
-	}
-
-	public void addResizeListener(ResizeListener rl) {
-		resizeListeners.add(rl);
+	private void setMnemonic(Scene scene, KeyCode keyCode, Runnable r) {
+		scene.getAccelerators().put(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN), r);
 	}
 
 	public Stage getPrimaryStage() {
 		return this.primaryStage;
 	}
-
-	private class AcceleratorEventHandler implements Runnable {
-		@Override
-		public void run() {
-		}
-	}
-
 }

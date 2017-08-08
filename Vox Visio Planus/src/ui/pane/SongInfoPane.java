@@ -4,16 +4,21 @@
 package ui.pane;
 
 import audio.MediaChangedListener;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import window.WindowPane;
 
 /**
  * @author Docter60
  *
  */
-public class SongInfoPane extends VerticalHotSpotPane implements MediaChangedListener {
+public class SongInfoPane extends WindowPane implements MediaChangedListener {
 	public static final String AUDIO_CONTROL_RES = "file:res/texture/infoPane/";
 	public static final double WIDTH = 300;
 	public static final double HEIGHT = 100;
@@ -22,6 +27,9 @@ public class SongInfoPane extends VerticalHotSpotPane implements MediaChangedLis
 
 	public static String notApp = "Unknown";
 
+	private HBox infoBox;
+	private VBox textInfoBox;
+	
 	private Label title;
 	private Label artist;
 	private Label album;
@@ -29,11 +37,15 @@ public class SongInfoPane extends VerticalHotSpotPane implements MediaChangedLis
 	private ImageView albumCover;
 
 	public SongInfoPane(Scene primaryScene) {
-		super("", (primaryScene.getWidth() - WIDTH) / 2.0, primaryScene.getHeight() - HEIGHT, WIDTH, HEIGHT);
-		this.setId("songInfoPane");
+		super((primaryScene.getWidth() - WIDTH) / 2.0, primaryScene.getHeight() - HEIGHT, WIDTH, HEIGHT);
+		this.mainPane.setId("songInfoPane");
 		this.relocate((primaryScene.getWidth() - WIDTH) / 2.0, primaryScene.getHeight() - HEIGHT);
-		this.setMovesUp(true);
 
+		this.infoBox = new HBox();
+		
+		this.textInfoBox = new VBox();
+		this.textInfoBox.setTranslateY(20.0);
+		
 		this.title = new Label();
 		this.artist = new Label();
 		this.album = new Label();
@@ -43,34 +55,27 @@ public class SongInfoPane extends VerticalHotSpotPane implements MediaChangedLis
 		this.albumCover.setFitHeight(100);
 		this.albumCover.setScaleX(0.8);
 		this.albumCover.setScaleY(0.8);
+		this.albumCover.setTranslateY(10.0);
 
 		this.title.setId("songInfoLabel");
 		this.artist.setId("songInfoLabel");
 		this.album.setId("songInfoLabel");
 		this.year.setId("songInfoLabel");
 
-		this.getChildren().add(title);
-		this.getChildren().add(artist);
-		this.getChildren().add(album);
-		this.getChildren().add(year);
-		this.getChildren().add(albumCover);
-	}
-
-	@Override
-	public void initializeElements() {
-		super.initializeElements();
-		this.albumCover.relocate(10, 0);
-		this.title.relocate(110, 10);
-		this.artist.relocate(110, 22);
-		this.album.relocate(110, 34);
-		this.year.relocate(110, 46);
-	}
-
-	@Override
-	public void resizeUpdate(double newWidth, double newHeight) {
-		double newX = (newWidth - WIDTH) / 2.0;
-		this.relocate(newX, newHeight);
-		this.hotSpot.relocate(newX, newHeight - HEIGHT);
+		textInfoBox.getChildren().add(title);
+		textInfoBox.getChildren().add(artist);
+		textInfoBox.getChildren().add(album);
+		textInfoBox.getChildren().add(year);
+		
+		infoBox.getChildren().add(albumCover);
+		infoBox.getChildren().add(textInfoBox);
+		infoBox.setTranslateX(30.0);
+		
+		this.mainPane.setCenter(infoBox);
+		
+		this.setRestoreShortcut(KeyCode.I);
+		this.setResizeable(false);
+		this.setSlideable(true);
 	}
 
 	@Override

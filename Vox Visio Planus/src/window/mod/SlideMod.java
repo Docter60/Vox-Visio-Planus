@@ -28,8 +28,9 @@ import window.WindowPane;
 import window.mod.SnapMod.Snap;
 
 /**
- * @author Docter60
+ * TODO Fix hotSpot relocation
  * 
+ * @author Docter60
  */
 public class SlideMod {
 	public static final Image LOCK_IMAGE = new Image(SlideMod.class.getResource("lock.png").toString());
@@ -52,9 +53,8 @@ public class SlideMod {
 	private WindowPositionListener windowPositionListener;
 	private WindowSizeListener windowSizeListener;
 	private SceneChangeListener sceneChangeListener;
+	private SceneResizeListener sceneResizeListener;
 
-	private double showX;
-	private double showY;
 	private double hideX;
 	private double hideY;
 
@@ -74,6 +74,12 @@ public class SlideMod {
 		borderPane.prefHeightProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
 		wp.getMainPane().sceneProperty().removeListener(listenerHandles.get(wp).sceneChangeListener);
 		wp.getChildren().remove(listenerHandles.get(wp).lockButton);
+
+		if (wp.getScene() != null) {
+			wp.getScene().widthProperty().removeListener(listenerHandles.get(wp).sceneResizeListener);
+			wp.getScene().heightProperty().removeListener(listenerHandles.get(wp).sceneResizeListener);
+		}
+
 		listenerHandles.remove(wp);
 	}
 
@@ -101,11 +107,12 @@ public class SlideMod {
 		this.windowPositionListener = new WindowPositionListener();
 		this.windowSizeListener = new WindowSizeListener();
 		this.sceneChangeListener = new SceneChangeListener();
+		this.sceneResizeListener = new SceneResizeListener();
 		this.mainPane.prefWidthProperty().addListener(windowSizeListener);
 		this.mainPane.prefHeightProperty().addListener(windowSizeListener);
 		this.mainPane.layoutXProperty().addListener(windowPositionListener);
 		this.mainPane.layoutYProperty().addListener(windowPositionListener);
-		
+
 		wp.getMainPane().sceneProperty().addListener(this.sceneChangeListener);
 
 		this.wp.getChildren().add(lockButton);
@@ -133,8 +140,8 @@ public class SlideMod {
 	private void handleState() {
 		if (this.hotSpot != null && (this.state == Slide.DEFAULT || !this.isLocked)) {
 			this.removeHotSpotProperties(wp);
-			this.wp.setLayoutX(showX);
-			this.wp.setLayoutY(showY);
+			this.wp.setTranslateX(0);
+			this.wp.setTranslateY(0);
 			((Group) this.wp.getScene().getRoot()).getChildren().remove(hotSpot);
 			this.hotSpot = null;
 		} else if (this.isLocked && this.state != Slide.DEFAULT) {
@@ -156,28 +163,26 @@ public class SlideMod {
 	}
 
 	private void configureSlideValues() {
-		this.showX = this.wp.getLayoutX();
-		this.showY = this.wp.getLayoutY();
 		switch (this.state) {
 		case N_SLIDE:
-			this.hideX = this.showX;
-			this.hideY = this.showY - this.wp.getMainPane().getPrefHeight();
+			this.hideX = 0;
+			this.hideY = -this.wp.getMainPane().getPrefHeight();
 			break;
 		case S_SLIDE:
-			this.hideX = this.showX;
-			this.hideY = this.showY + this.wp.getMainPane().getPrefHeight();
+			this.hideX = 0;
+			this.hideY = this.wp.getMainPane().getPrefHeight();
 			break;
 		case E_SLIDE:
-			this.hideX = this.showX + this.wp.getMainPane().getPrefWidth();
-			this.hideY = this.showY;
+			this.hideX = this.wp.getMainPane().getPrefWidth();
+			this.hideY = 0;
 			break;
 		case W_SLIDE:
-			this.hideX = this.showX - this.wp.getMainPane().getPrefWidth();
-			this.hideY = this.showY;
+			this.hideX = -this.wp.getMainPane().getPrefWidth();
+			this.hideY = 0;
 			break;
 		case DEFAULT:
-			this.hideX = this.showX;
-			this.hideY = this.showY;
+			this.hideX = 0;
+			this.hideY = 0;
 			break;
 		default:
 			System.err.println("Slide value method error");
@@ -186,14 +191,14 @@ public class SlideMod {
 	}
 
 	private void slideWindowPane() {
-		double currentX = this.wp.getLayoutX();
-		double currentY = this.wp.getLayoutY();
+		double currentX = this.wp.getTranslateX();
+		double currentY = this.wp.getTranslateY();
 		if (this.showPane) {
-			this.wp.setLayoutX(interpolator.interpolate(currentX, this.showX, 0.07));
-			this.wp.setLayoutY(interpolator.interpolate(currentY, this.showY, 0.07));
+			this.wp.setTranslateX(interpolator.interpolate(currentX, 0, 0.07));
+			this.wp.setTranslateY(interpolator.interpolate(currentY, 0, 0.07));
 		} else {
-			this.wp.setLayoutX(interpolator.interpolate(currentX, this.hideX, 0.07));
-			this.wp.setLayoutY(interpolator.interpolate(currentY, this.hideY, 0.07));
+			this.wp.setTranslateX(interpolator.interpolate(currentX, this.hideX, 0.07));
+			this.wp.setTranslateY(interpolator.interpolate(currentY, this.hideY, 0.07));
 		}
 	}
 
@@ -237,17 +242,9 @@ public class SlideMod {
 		this.lockButton.setLayoutX(this.mainPane.getLayoutX() + width - 2 * this.lockButton.getWidth() - 2);
 		this.lockButton.setLayoutY(this.mainPane.getLayoutY() + 2);
 	}
-	
+
 	public static HashMap<WindowPane, SlideMod> getListenerHandles() {
 		return listenerHandles;
-	}
-
-	public double getShowX() {
-		return showX;
-	}
-
-	public double getShowY() {
-		return showY;
 	}
 
 	public double getHideX() {
@@ -276,6 +273,63 @@ public class SlideMod {
 
 	}
 
+	private void screenResizeUpdate() {
+		this.wp.setTranslateX(0);
+		this.wp.setTranslateY(0);
+
+		double newSceneHeight = this.wp.getScene().getHeight();
+		double newSceneWidth = this.wp.getScene().getWidth();
+
+		double width = this.mainPane.getPrefWidth();
+		double height = this.mainPane.getPrefHeight();
+
+		double oldLayoutX = this.wp.getMainPane().getLayoutX();
+		double oldLayoutY = this.wp.getMainPane().getLayoutY();
+
+		double newLayoutX;
+		double newLayoutY;
+
+		switch (this.state) {
+		case N_SLIDE:
+			newLayoutX = oldLayoutX;
+			newLayoutY = oldLayoutY;
+			break;
+		case S_SLIDE:
+			newLayoutX = oldLayoutX;
+			newLayoutY = newSceneHeight - height;
+			break;
+		case E_SLIDE:
+			newLayoutX = oldLayoutX;
+			newLayoutY = oldLayoutY;
+			break;
+		case W_SLIDE:
+			newLayoutX = newSceneWidth - width;
+			newLayoutY = oldLayoutY;
+			break;
+		default:
+			System.err.println("Slide on scene resize error");
+		case DEFAULT:
+			newLayoutX = 0;
+			newLayoutY = 0;
+			break;
+		}
+		
+		this.mainPane.setLayoutX(newLayoutX);
+		this.mainPane.setLayoutY(newLayoutY);
+		
+		configureSlideValues();
+		
+		if(this.hotSpot != null) {
+			double xPos = this.mainPane.getLayoutX();
+			double yPos = this.mainPane.getLayoutY();
+			this.hotSpot.setX(xPos);
+			this.hotSpot.setY(yPos);
+			this.wp.setTranslateX(hideX);
+			this.wp.setTranslateY(hideY);
+		}
+		this.refreshLockButton();
+	}
+
 	private class WindowEnterListener implements EventHandler<MouseEvent> {
 		@Override
 		public void handle(MouseEvent e) {
@@ -294,6 +348,20 @@ public class SlideMod {
 		@Override
 		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
 			SlideMod.this.refreshLockButton();
+			HotSpot hotSpot = SlideMod.this.hotSpot;
+			if(hotSpot != null) {
+				double xPos = SlideMod.this.mainPane.getLayoutX();
+				double yPos = SlideMod.this.mainPane.getLayoutY();
+				hotSpot.setX(xPos);
+				hotSpot.setY(yPos);
+			}
+		}
+	}
+
+	private class SceneResizeListener implements ChangeListener<Number> {
+		@Override
+		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
+			SlideMod.this.screenResizeUpdate();
 		}
 	}
 
@@ -305,29 +373,32 @@ public class SlideMod {
 			double newWidth = SlideMod.this.mainPane.getPrefWidth();
 			double newHeight = SlideMod.this.mainPane.getPrefHeight();
 
-			if(SlideMod.this.isLocked) {
+			if (SlideMod.this.isLocked) {
 				SlideMod.this.lockButton.fire();
 			}
-			
-			if(SlideMod.this.hotSpot != null) {
-				SlideMod.this.wp.setLayoutX(showX);
-				SlideMod.this.wp.setLayoutY(showY);
+
+			if (SlideMod.this.hotSpot != null) {
+				SlideMod.this.wp.setTranslateX(0);
+				SlideMod.this.wp.setTranslateY(0);
 				SlideMod.this.configureSlideValues();
 				HotSpot hotSpot = SlideMod.this.hotSpot;
 				hotSpot.setWidth(newWidth);
 				hotSpot.setHeight(newHeight);
-				hotSpot.setLayoutX(showX);
-				hotSpot.setLayoutY(showY);
+				System.out.println(SlideMod.this.mainPane.getLayoutX());
+				hotSpot.setLayoutX(SlideMod.this.mainPane.getLayoutX());
+				hotSpot.setLayoutY(SlideMod.this.mainPane.getLayoutY());
 			}
 		}
 	}
-	
+
 	private class SceneChangeListener implements ChangeListener<Scene> {
 		@Override
 		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
-			if(SlideMod.this.getState() != Slide.DEFAULT) {
+			if (SlideMod.this.getState() != Slide.DEFAULT) {
 				SlideMod.this.lockButton.fire();
 			}
+			SlideMod.this.mainPane.getScene().widthProperty().addListener(SlideMod.this.sceneResizeListener);
+			SlideMod.this.mainPane.getScene().heightProperty().addListener(SlideMod.this.sceneResizeListener);
 		}
 	}
 }

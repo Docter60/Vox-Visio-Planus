@@ -25,10 +25,10 @@ import javafx.util.Duration;
  * 
  * @author Docter60
  */
-public abstract class AudioSpectrumVisualizer {
+public abstract class AudioSpectrumVisualizer extends Group {
 	protected static final double NATIVE_WIDTH = 1920.0 / 2.0;
 	protected static final double NATIVE_HEIGHT = 1080.0 / 2.0;
-	protected static final double UPDATE_FREQUENCY = 0.016;
+	protected static final double UPDATE_FREQUENCY = 0.01;
 	protected static final Interpolator INTERPOLATOR = Interpolator.LINEAR;
 	
 	private static List<AudioSpectrumVisualizer> audioSpectrumVisualizers;
@@ -42,7 +42,6 @@ public abstract class AudioSpectrumVisualizer {
 			public void handle(ActionEvent ae) {
 				for(AudioSpectrumVisualizer asv : audioSpectrumVisualizers) {
 					asv.update();
-					asv.elements.toBack();
 				}
 			}
 		});
@@ -51,7 +50,6 @@ public abstract class AudioSpectrumVisualizer {
 	}
 	
 	protected Scene scene;
-	protected Group elements;
 	protected EffectsKit effectsKit;
 	protected double sceneWidth;
 	protected double sceneHeight;
@@ -61,11 +59,12 @@ public abstract class AudioSpectrumVisualizer {
 	private SceneHeightResizeListener sceneHeightResizeListener;
 	
 	public AudioSpectrumVisualizer(Scene scene, SpectrumMediaPlayer spectrumMediaPlayer) {
+		super();
 		this.scene = scene;
-		elements = new Group();
 		sceneWidth = scene.getWidth();
 		sceneHeight = scene.getHeight();
 		spectrumData = spectrumMediaPlayer.getSpectrumData();
+		effectsKit = new EffectsKit(this);
 		
 		sceneWidthResizeListener = new SceneWidthResizeListener();
 		sceneHeightResizeListener = new SceneHeightResizeListener();
@@ -84,16 +83,16 @@ public abstract class AudioSpectrumVisualizer {
 	
 	protected abstract void update();
 	
-	protected void onSceneWidthResize(double newWidth) {
+	public EffectsKit getEffectsKit() {
+		return effectsKit;
+	}
+	
+	private void onSceneWidthResize(double newWidth) {
 		sceneWidth = newWidth;
 	}
 	
-	protected void onSceneHeightResize(double newHeight) {
+	private void onSceneHeightResize(double newHeight) {
 		sceneHeight = newHeight;
-	}
-	
-	protected Group getElements() {
-		return elements;
 	}
 	
 	private class SceneWidthResizeListener implements ChangeListener<Number> {

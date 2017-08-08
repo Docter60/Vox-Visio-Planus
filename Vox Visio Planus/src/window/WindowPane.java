@@ -21,8 +21,9 @@ import window.mod.SlideMod;
 import window.mod.SnapMod;
 
 /**
+ * TODO Add window bounds so windows don't hide off screen when resized or dragged
+ * 
  * @author Docter60
- *
  */
 public class WindowPane extends Group {
 	public static final double DEFAULT_SIZE = 100;

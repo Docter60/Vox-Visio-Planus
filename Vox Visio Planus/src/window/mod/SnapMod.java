@@ -11,9 +11,6 @@ import javafx.scene.Scene;
 import window.WindowPane;
 
 /**
- * Needs to remember offset from mouse when the window is docked. When the
- * window has mouse down and is docked, record mouse movement. When window is in
- * docking range, dock and record mouse displacement from when first docked.
  * 
  * @author Docter60
  *
@@ -62,6 +59,10 @@ public class SnapMod {
 		wp.getMainPane().layoutYProperty().removeListener(listenerHandles.get(wp).yListener);
 		wp.getMainPane().sceneProperty().removeListener(listenerHandles.get(wp).sceneChangeListener);
 		listenerHandles.remove(wp);
+	}
+	
+	public static boolean isSnappable(WindowPane wp) {
+		return listenerHandles.get(wp) != null;
 	}
 	
 	public static Snap getSnapState(WindowPane wp) {
@@ -177,5 +178,4 @@ public class SnapMod {
 			SnapMod.this.handleWindowState();
 		}
 	}
-
 }

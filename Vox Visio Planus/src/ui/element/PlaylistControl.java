@@ -7,6 +7,12 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 
+
+/**
+ * TODO Create Playlist UI
+ * 
+ * @author Docter60
+ */
 public class PlaylistControl extends Group {
 
 	public static final String PLAYLIST_CONTROL_RES = "file:res/texture/playlistControl/";
@@ -64,42 +70,42 @@ public class PlaylistControl extends Group {
 		this.openButton.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Opening
 			}
 		});
 		
 		this.closeButton.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Closing
 			}
 		});
 		
 		this.addButton.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Adding
 			}
 		});
 		
 		this.removeButton.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Removing
 			}
 		});
 		
 		this.addFolderButton.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Adding entire folder
 			}
 		});
 		
 		this.swapButton.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Swapping
 			}
 		});
 	}
@@ -108,7 +114,7 @@ public class PlaylistControl extends Group {
 		this.shuffleToggle.setOnAction(new PlaylistControlEventHandler() {
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO
+				// Handle Shuffling
 			}
 		});
 	}
