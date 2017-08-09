@@ -87,22 +87,22 @@ public abstract class AudioSpectrumVisualizer extends Group {
 		return effectsKit;
 	}
 	
-	private void onSceneWidthResize(double newWidth) {
+	protected void onSceneWidthResize(double newWidth) {
 		sceneWidth = newWidth;
 	}
 	
-	private void onSceneHeightResize(double newHeight) {
+	protected void onSceneHeightResize(double newHeight) {
 		sceneHeight = newHeight;
 	}
 	
-	private class SceneWidthResizeListener implements ChangeListener<Number> {
+	protected class SceneWidthResizeListener implements ChangeListener<Number> {
 		@Override
 		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
 			AudioSpectrumVisualizer.this.onSceneWidthResize(newVal.doubleValue());
 		}
 	}
 	
-	private class SceneHeightResizeListener implements ChangeListener<Number> {
+	protected class SceneHeightResizeListener implements ChangeListener<Number> {
 		@Override
 		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
 			AudioSpectrumVisualizer.this.onSceneHeightResize(newVal.doubleValue());

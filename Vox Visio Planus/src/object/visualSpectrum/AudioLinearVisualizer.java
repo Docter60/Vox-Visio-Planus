@@ -11,19 +11,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 /**
- * TODO There are many things that can be calculated in listeners instead of the update method.
+ * 
  * 
  * @author Docter60
- *
  */
 public class AudioLinearVisualizer extends AudioSpectrumVisualizer {
 
+	private static final double C = 15.0;
+
+	private double heightRatio;
+	private double lineWidth;
+
 	public AudioLinearVisualizer(Scene scene, SpectrumMediaPlayer spectrumMediaPlayer, int lineNodeCount) {
 		super(scene, spectrumMediaPlayer);
-		double lineNodeSpread = sceneWidth / (double) lineNodeCount;
-		for (int i = 0; i < lineNodeCount - 1; i++) {
-			double x1 = (double) i * lineNodeSpread;
-			double x2 = (double) (i + 1) * lineNodeSpread;
+		lineWidth = sceneWidth / lineNodeCount;
+		heightRatio = sceneHeight / NATIVE_HEIGHT * C;
+		for (int i = 0; i < lineNodeCount; i++) {
+			double x1 = (double) i * lineWidth;
+			double x2 = (double) (i + 1) * lineWidth;
 			Line line = new Line(x1, sceneHeight, x2, sceneHeight);
 			line.setStroke(Color.GRAY);
 			getChildren().add(line);
@@ -34,23 +39,45 @@ public class AudioLinearVisualizer extends AudioSpectrumVisualizer {
 
 	@Override
 	public void update() {
-		double nativeHeightRatio = sceneHeight / NATIVE_HEIGHT;
-		double lineNodeSpread = sceneWidth / (double) getChildren().size();
+		double endCarry = 0;
+		for (int i = 1; i <= getChildren().size(); i++) {
+			Node node = getChildren().get(i - 1);
+			Line l = ((Line) node);
+			double newStartHeight;
+			double startHeight;
+			double newEndHeight;
+			double endHeight;
+			if(i == 1) {
+				newStartHeight = sceneHeight - spectrumData[i - 1] * heightRatio;
+				startHeight = INTERPOLATOR.interpolate(l.getStartY(), newStartHeight, 0.07);
+			} else {
+				startHeight = endCarry;
+			}
+			newEndHeight = sceneHeight - spectrumData[i] * heightRatio;
+			endHeight = INTERPOLATOR.interpolate(l.getEndY(), newEndHeight, 0.07);
+			l.setStartY(startHeight);
+			l.setEndY(endHeight);
+			endCarry = endHeight;
+		}
+	}
+
+	@Override
+	protected void onSceneWidthResize(double newWidth) {
+		super.onSceneWidthResize(newWidth);
+		lineWidth = newWidth / getChildren().size();
 		for (int i = 0; i < getChildren().size(); i++) {
 			Node node = getChildren().get(i);
-			if (node instanceof Line) {
-				Line l = ((Line) node);
-				double x1 = (double) i * lineNodeSpread;
-				double x2 = (double) (i + 1) * lineNodeSpread;
-				double newStartHeight = sceneHeight - spectrumData[i] * 15.0 * nativeHeightRatio;
-				double startHeight = INTERPOLATOR.interpolate(l.getStartY(), newStartHeight, 0.07);
-				double newEndHeight = sceneHeight - spectrumData[i + 1] * 15.0 * nativeHeightRatio;
-				double endHeight = INTERPOLATOR.interpolate(l.getEndY(), newEndHeight, 0.07);
-				l.setStartY(startHeight);
-				l.setEndY(endHeight);
-				l.setStartX(x1);
-				l.setEndX(x2);
-			}
+			Line l = ((Line) node);
+			double x1 = i * lineWidth;
+			double x2 = (i + 1) * lineWidth;
+			l.setStartX(x1);
+			l.setEndX(x2);
 		}
+	}
+
+	@Override
+	protected void onSceneHeightResize(double newHeight) {
+		super.onSceneHeightResize(newHeight);
+		heightRatio = newHeight / NATIVE_HEIGHT * C;
 	}
 }

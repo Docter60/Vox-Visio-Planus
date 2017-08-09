@@ -28,7 +28,7 @@ import window.WindowPane;
 import window.mod.SnapMod.Snap;
 
 /**
- * TODO Fix hotSpot relocation
+ * BUG Fix hotSpot relocation when corner snapping
  * 
  * @author Docter60
  */
@@ -137,7 +137,7 @@ public class SlideMod {
 		return slideState;
 	}
 
-	private void handleState() {
+	private void handleState() { // TODO This is a mess, optimize
 		if (this.hotSpot != null && (this.state == Slide.DEFAULT || !this.isLocked)) {
 			this.removeHotSpotProperties(wp);
 			this.wp.setTranslateX(0);
@@ -190,7 +190,7 @@ public class SlideMod {
 		}
 	}
 
-	private void slideWindowPane() {
+	private void slideWindowPane() { // TODO Either needs a switch statement or set the method in a listener
 		double currentX = this.wp.getTranslateX();
 		double currentY = this.wp.getTranslateY();
 		if (this.showPane) {

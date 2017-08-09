@@ -7,6 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -21,13 +22,15 @@ import window.mod.SlideMod;
 import window.mod.SnapMod;
 
 /**
- * TODO Add window bounds so windows don't hide off screen when resized or dragged
+ * 
  * 
  * @author Docter60
  */
 public class WindowPane extends Group {
 	public static final double DEFAULT_SIZE = 100;
 
+	protected LayoutListener layoutListener;
+	
 	protected BorderPane mainPane;
 	protected DragBar dragBar;
 	protected Label title;
@@ -40,12 +43,14 @@ public class WindowPane extends Group {
 	public WindowPane(double x, double y, double width, double height) {
 		super();
 		this.setOnMousePressed(new ClickListener());
+		this.layoutListener = new LayoutListener();
 		this.mainPane = new BorderPane();
 		this.mainPane.setId("windowPane");
 		this.mainPane.setLayoutX(x);
 		this.mainPane.setLayoutY(y);
 		this.mainPane.setPrefSize(width, height);
 		this.mainPane.prefWidthProperty().addListener(new WidthListener());
+		this.mainPane.sceneProperty().addListener(new SceneChangeListener());
 		
 		Rectangle clip = new Rectangle(0, 0, mainPane.getPrefWidth(), mainPane.getPrefHeight());
 		clip.setArcWidth(20);
@@ -128,6 +133,27 @@ public class WindowPane extends Group {
 	/*
 	 * Inner classes
 	 */
+	
+	protected class LayoutListener implements ChangeListener<Number> {
+		@Override
+		public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+			Scene scene = WindowPane.this.getScene();
+			BorderPane pane = WindowPane.this.mainPane;
+			if(scene != null) {
+				double sceneWidth = scene.getWidth();
+				double sceneHeight = scene.getHeight();
+				double layoutX = pane.getLayoutX();
+				double layoutY = pane.getLayoutY();
+				double width = pane.getPrefWidth();
+				double height = pane.getPrefHeight();
+				if(layoutX + width > sceneWidth)
+					pane.setLayoutX(sceneWidth - width);
+				if(layoutY + height > sceneHeight)
+					pane.setLayoutY(sceneHeight - height);
+			}
+		}
+		
+	}
 
 	protected class WidthListener implements ChangeListener<Number> {
 		@Override
@@ -140,6 +166,14 @@ public class WindowPane extends Group {
 		@Override
 		public void handle(MouseEvent arg0) {
 			WindowPane.this.toFront();
+		}
+	}
+	
+	private class SceneChangeListener implements ChangeListener<Scene> {
+		@Override
+		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
+			WindowPane.this.mainPane.getScene().widthProperty().addListener(WindowPane.this.layoutListener);
+			WindowPane.this.mainPane.getScene().heightProperty().addListener(WindowPane.this.layoutListener);
 		}
 	}
 }

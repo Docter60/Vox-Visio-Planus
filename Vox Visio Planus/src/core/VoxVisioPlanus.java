@@ -19,6 +19,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import object.visualSpectrum.AudioBarVisualizer;
 import object.visualSpectrum.AudioLinearVisualizer;
+import object.visualSpectrum.CircleSpectrum;
 
 /**
  * 
@@ -60,14 +61,15 @@ public class VoxVisioPlanus extends Application {
 		spectrumMediaPlayer.setVolume(0.8);
 
 		guiManager = new GUIManager(this);
-
-		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(scene, spectrumMediaPlayer, 128);
-		audioBarVisualizer.getEffectsKit().setFillRainbow();
-		audioBarVisualizer.getEffectsKit().setGlow(1.0);
 		
 		AudioLinearVisualizer linearSpectrum = new AudioLinearVisualizer(scene, spectrumMediaPlayer, 128);
 		linearSpectrum.getEffectsKit().setStrokeRainbow();
-		linearSpectrum.getEffectsKit().setGlow(1.0);
+		
+		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(scene, spectrumMediaPlayer, 128);
+		audioBarVisualizer.getEffectsKit().setFillRainbow();
+		
+		CircleSpectrum circleSpectrum = new CircleSpectrum(scene, spectrumMediaPlayer, 128);
+		circleSpectrum.getEffectsKit().setStrokeRainbow();
 
 		primaryStage.show();
 	}

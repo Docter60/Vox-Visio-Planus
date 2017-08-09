@@ -3,6 +3,8 @@
  */
 package audio;
 
+import java.util.Arrays;
+
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
 /**
@@ -30,6 +32,12 @@ public class SpectrumMediaPlayer extends AdvancedMediaPlayer {
 		mediaPlayer.setAudioSpectrumInterval(INTERVAL);
 		mediaPlayer.setAudioSpectrumNumBands(BANDS);
 		mediaPlayer.setAudioSpectrumThreshold(THRESHOLD);
+	}
+	
+	@Override
+	public void stop() {
+		super.stop();
+		Arrays.fill(spectrumData, 0);
 	}
 	
 	public float[] getSpectrumData() {
