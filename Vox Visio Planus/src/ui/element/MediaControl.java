@@ -104,7 +104,7 @@ public class MediaControl extends Group {
 	private void configureSliderControl() {
 		this.volumeSlider.setMin(0.0);
 		this.volumeSlider.setMax(1.0);
-		this.volumeSlider.setValue(0.8);
+		this.volumeSlider.setValue(0.0);
 		this.getChildren().add(this.volumeSlider);
 	}
 	
@@ -171,6 +171,7 @@ public class MediaControl extends Group {
 				MediaControl.this.spectrumMediaPlayer.setVolume(volume);
 			}
 		});
+		this.volumeSlider.setValue(0.05);
 	}
 	
 	private class AudioControlEventHandler implements EventHandler<ActionEvent> {

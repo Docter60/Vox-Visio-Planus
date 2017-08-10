@@ -67,20 +67,22 @@ public class SlideMod {
 	}
 
 	public static void setUnslideable(WindowPane wp) {
-		Pane borderPane = wp.getMainPane();
-		borderPane.layoutXProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
-		borderPane.prefWidthProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
-		borderPane.layoutYProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
-		borderPane.prefHeightProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
-		wp.getMainPane().sceneProperty().removeListener(listenerHandles.get(wp).sceneChangeListener);
-		wp.getChildren().remove(listenerHandles.get(wp).lockButton);
+		if (listenerHandles.containsKey(wp)) {
+			Pane borderPane = wp.getMainPane();
+			borderPane.layoutXProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
+			borderPane.prefWidthProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
+			borderPane.layoutYProperty().removeListener(listenerHandles.get(wp).windowPositionListener);
+			borderPane.prefHeightProperty().removeListener(listenerHandles.get(wp).windowSizeListener);
+			wp.getMainPane().sceneProperty().removeListener(listenerHandles.get(wp).sceneChangeListener);
+			wp.getChildren().remove(listenerHandles.get(wp).lockButton);
 
-		if (wp.getScene() != null) {
-			wp.getScene().widthProperty().removeListener(listenerHandles.get(wp).sceneResizeListener);
-			wp.getScene().heightProperty().removeListener(listenerHandles.get(wp).sceneResizeListener);
+			if (wp.getScene() != null) {
+				wp.getScene().widthProperty().removeListener(listenerHandles.get(wp).sceneResizeListener);
+				wp.getScene().heightProperty().removeListener(listenerHandles.get(wp).sceneResizeListener);
+			}
+
+			listenerHandles.remove(wp);
 		}
-
-		listenerHandles.remove(wp);
 	}
 
 	private static void initializeSlider() {
@@ -190,7 +192,8 @@ public class SlideMod {
 		}
 	}
 
-	private void slideWindowPane() { // TODO Either needs a switch statement or set the method in a listener
+	private void slideWindowPane() { // TODO Either needs a switch statement or
+										// set the method in a listener
 		double currentX = this.wp.getTranslateX();
 		double currentY = this.wp.getTranslateY();
 		if (this.showPane) {
@@ -313,13 +316,13 @@ public class SlideMod {
 			newLayoutY = 0;
 			break;
 		}
-		
+
 		this.mainPane.setLayoutX(newLayoutX);
 		this.mainPane.setLayoutY(newLayoutY);
-		
+
 		configureSlideValues();
-		
-		if(this.hotSpot != null) {
+
+		if (this.hotSpot != null) {
 			double xPos = this.mainPane.getLayoutX();
 			double yPos = this.mainPane.getLayoutY();
 			this.hotSpot.setX(xPos);
@@ -349,7 +352,7 @@ public class SlideMod {
 		public void changed(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
 			SlideMod.this.refreshLockButton();
 			HotSpot hotSpot = SlideMod.this.hotSpot;
-			if(hotSpot != null) {
+			if (hotSpot != null) {
 				double xPos = SlideMod.this.mainPane.getLayoutX();
 				double yPos = SlideMod.this.mainPane.getLayoutY();
 				hotSpot.setX(xPos);

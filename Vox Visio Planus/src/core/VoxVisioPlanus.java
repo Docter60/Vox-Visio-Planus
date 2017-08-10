@@ -18,11 +18,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import object.visualSpectrum.AudioBarVisualizer;
+import object.visualSpectrum.AudioCircleVisualizer;
 import object.visualSpectrum.AudioLinearVisualizer;
-import object.visualSpectrum.CircleSpectrum;
+import object.visualSpectrum.AudioSpectrumVisualizer;
 
 /**
- * Testing over the web git
+ * 
  * 
  * @author Docter60
  */
@@ -55,6 +56,7 @@ public class VoxVisioPlanus extends Application {
 		configureMnemonics(scene);
 
 		primaryStage.setScene(scene);
+		AudioSpectrumVisualizer.setScene(scene);
 
 		spectrumMediaPlayer = new SpectrumMediaPlayer();
 		spectrumMediaPlayer.setMedia(new Media(new File(INTRO).toURI().toString()));
@@ -62,13 +64,13 @@ public class VoxVisioPlanus extends Application {
 
 		guiManager = new GUIManager(this);
 		
-		AudioLinearVisualizer linearSpectrum = new AudioLinearVisualizer(scene, spectrumMediaPlayer, 128);
+		AudioLinearVisualizer linearSpectrum = new AudioLinearVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
 		linearSpectrum.getEffectsKit().setStrokeRainbow();
 		
-		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(scene, spectrumMediaPlayer, 128);
+		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
 		audioBarVisualizer.getEffectsKit().setFillRainbow();
 		
-		CircleSpectrum circleSpectrum = new CircleSpectrum(scene, spectrumMediaPlayer, 128);
+		AudioCircleVisualizer circleSpectrum = new AudioCircleVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
 		circleSpectrum.getEffectsKit().setStrokeRainbow();
 
 		primaryStage.show();

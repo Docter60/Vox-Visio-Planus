@@ -38,8 +38,10 @@ public class RestoreMod {
 	}
 	
 	public static void removeRestoreMod(WindowPane wp) {
-		wp.getScene().getAccelerators().remove(listenerHandles.get(wp).keyCodeCombination);
-		listenerHandles.remove(wp);
+		if(listenerHandles.containsKey(wp)){
+			wp.getScene().getAccelerators().remove(listenerHandles.get(wp).keyCodeCombination);
+			listenerHandles.remove(wp);
+		}
 	}
 	
 	private void createAccelerator() {

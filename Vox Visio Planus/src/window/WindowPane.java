@@ -84,6 +84,20 @@ public class WindowPane extends Group {
 		this.mainPane.setTop(this.title);
 	}
 	
+	public void close() {
+		this.layoutListener = null;
+		DragMod.makeUndraggable(dragBar);
+		ResizeMod.makeUnresizeable(mainPane);
+		SnapMod.setUnsnappable(this);
+		SlideMod.setUnslideable(this);
+		CloseMod.removeCloseButton(this);
+		RestoreMod.removeRestoreMod(this);
+		this.getChildren().clear();
+		this.dragBar = null;
+		this.title = null;
+		this.mainPane = null;
+	}
+	
 	public void setDraggable(boolean isDraggable) {
 		if(isDraggable)
 			DragMod.makeDraggable(dragBar);
@@ -172,8 +186,10 @@ public class WindowPane extends Group {
 	private class SceneChangeListener implements ChangeListener<Scene> {
 		@Override
 		public void changed(ObservableValue<? extends Scene> obs, Scene oldVal, Scene newVal) {
-			WindowPane.this.mainPane.getScene().widthProperty().addListener(WindowPane.this.layoutListener);
-			WindowPane.this.mainPane.getScene().heightProperty().addListener(WindowPane.this.layoutListener);
+			if(layoutListener != null) {
+				WindowPane.this.mainPane.getScene().widthProperty().addListener(WindowPane.this.layoutListener);
+				WindowPane.this.mainPane.getScene().heightProperty().addListener(WindowPane.this.layoutListener);
+			}
 		}
 	}
 }

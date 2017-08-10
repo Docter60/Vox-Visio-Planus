@@ -59,13 +59,15 @@ public class CloseMod {
 	}
 	
 	public static void removeCloseButton(WindowPane windowPane) {
-		Pane borderPane = windowPane.getMainPane();
-		borderPane.layoutXProperty().removeListener(listenerHandles.get(windowPane).xListener);
-		borderPane.prefWidthProperty().removeListener(listenerHandles.get(windowPane).widthListener);
-		borderPane.layoutYProperty().removeListener(listenerHandles.get(windowPane).yListener);
-		borderPane.prefHeightProperty().removeListener(listenerHandles.get(windowPane).heightListener);
-		windowPane.getChildren().remove(listenerHandles.get(windowPane).closeButton);
-		listenerHandles.remove(windowPane);
+		if(listenerHandles.containsKey(windowPane)) {
+			Pane borderPane = windowPane.getMainPane();
+			borderPane.layoutXProperty().removeListener(listenerHandles.get(windowPane).xListener);
+			borderPane.prefWidthProperty().removeListener(listenerHandles.get(windowPane).widthListener);
+			borderPane.layoutYProperty().removeListener(listenerHandles.get(windowPane).yListener);
+			borderPane.prefHeightProperty().removeListener(listenerHandles.get(windowPane).heightListener);
+			windowPane.getChildren().remove(listenerHandles.get(windowPane).closeButton);
+			listenerHandles.remove(windowPane);
+		}
 	}
 	
 	private static Button createCloseButton(Pane mainPane) {

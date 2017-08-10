@@ -26,11 +26,13 @@ public class AdvancedMediaPlayer {
 	private MetaDataListener metaDataListener;
 	private String[] songInfo;
 	private Image albumCover;
+	private double volume;
 	
 	public AdvancedMediaPlayer() {
 		mediaChangedListeners = new ArrayList<MediaChangedListener>();
 		songInfo = new String[4];
 		metaDataListener = new MetaDataListener();
+		volume = 0.05;
 	}
 	
 	public void setMedia(Media media) {
@@ -38,6 +40,7 @@ public class AdvancedMediaPlayer {
 			mediaPlayer.stop();
 		media.getMetadata().addListener(metaDataListener);
 		mediaPlayer = new MediaPlayer(media);
+		mediaPlayer.setVolume(volume);
 		mediaPlayer.setOnReady(new OnReadyListener());
 	}
 	
@@ -71,6 +74,7 @@ public class AdvancedMediaPlayer {
 			System.err.println("Media has not been set!");
 		else
 			mediaPlayer.setVolume(volume);
+		this.volume = volume;
 	}
 	
 	public void quickSeek(boolean isForward) {
