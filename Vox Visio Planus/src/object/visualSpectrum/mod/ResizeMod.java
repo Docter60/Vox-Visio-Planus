@@ -67,28 +67,28 @@ public class ResizeMod {
 		mousePressed = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ResizeMod.this.mousePressed(event);
+				mousePressed(event);
 			}
 		};
 		
 		mouseDragged = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ResizeMod.this.mouseDragged(event);
+				mouseDragged(event);
 			}
 		};
 		
 		mouseMoved = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ResizeMod.this.mouseOver(event);
+				mouseOver(event);
 			}
 		};
 		
 		mouseReleased = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				ResizeMod.this.mouseReleased(event);
+				mouseReleased(event);
 			}
 		};
 	}
@@ -107,11 +107,13 @@ public class ResizeMod {
 	}
 
 	public static void makeUnresizeable(Node node) {
-		node.removeEventHandler(MouseEvent.MOUSE_PRESSED, listenerHandles.get(node).mousePressed);
-		node.addEventHandler(MouseEvent.MOUSE_DRAGGED, listenerHandles.get(node).mouseDragged);
-		node.addEventHandler(MouseEvent.MOUSE_MOVED, listenerHandles.get(node).mouseMoved);
-		node.addEventHandler(MouseEvent.MOUSE_RELEASED, listenerHandles.get(node).mouseReleased);
-		listenerHandles.remove(node);
+		if(listenerHandles.containsKey(node)) {
+			node.removeEventHandler(MouseEvent.MOUSE_PRESSED, listenerHandles.get(node).mousePressed);
+			node.removeEventHandler(MouseEvent.MOUSE_DRAGGED, listenerHandles.get(node).mouseDragged);
+			node.removeEventHandler(MouseEvent.MOUSE_MOVED, listenerHandles.get(node).mouseMoved);
+			node.removeEventHandler(MouseEvent.MOUSE_RELEASED, listenerHandles.get(node).mouseReleased);
+			listenerHandles.remove(node);
+		}
 	}
 
 	protected void mouseReleased(MouseEvent event) {

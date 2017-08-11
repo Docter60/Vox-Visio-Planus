@@ -13,7 +13,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import object.visualSpectrum.AudioSpectrumVisualizer;
+import object.visualSpectrum.mod.DragMod;
+import object.visualSpectrum.mod.ResizeMod;
 import window.DataPrompt;
 
 /**
@@ -32,6 +35,7 @@ public class VisualizerMenu extends ContextMenu {
 	private MenuItem delete;
 	private MenuItem bringToFront;
 	private MenuItem sendToBack;
+	private MenuItem deselect;
 	private CheckMenuItem setFullScene;
 
 	//private DataPrompt prompt;
@@ -52,8 +56,9 @@ public class VisualizerMenu extends ContextMenu {
 		setColors = new MenuItem("Set Colors");
 		delete = new MenuItem("Delete");
 		setFullScene = new CheckMenuItem("Set Fullscreen");
+		deselect = new MenuItem("Deselect");
 
-		getItems().addAll(setElementCount, setColors, setFullScene, new SeparatorMenuItem(), bringToFront, sendToBack,
+		getItems().addAll(deselect, setElementCount, setColors, setFullScene, new SeparatorMenuItem(), bringToFront, sendToBack,
 				new SeparatorMenuItem(), delete);
 
 		asv.getSelectionRect().addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -130,13 +135,31 @@ public class VisualizerMenu extends ContextMenu {
 					
 					asv.getScene().widthProperty().addListener(sceneWidthListener);
 					asv.getScene().heightProperty().addListener(sceneHeightListener);
+					
+					ResizeMod.makeUnresizeable(asv.getSelectionRect());
+					DragMod.makeUndraggable(asv.getSelectionRect());
 				} else {
 					asv.getScene().widthProperty().removeListener(sceneWidthListener);
 					asv.getScene().heightProperty().removeListener(sceneHeightListener);
 					useOldData();
+					ResizeMod.makeResizable(asv.getSelectionRect());
+					DragMod.makeDraggable(asv.getSelectionRect());
 				}
 			}
 		});
+		
+		deselect.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				asv.getSelectionRect().setStroke(Color.TRANSPARENT);
+				ResizeMod.makeUnresizeable(asv.getSelectionRect());
+				DragMod.makeUndraggable(asv.getSelectionRect());
+			}
+		});
+	}
+	
+	public boolean isFullScreen() {
+		return setFullScene.isSelected();
 	}
 	
 	private class SceneWidthListener implements ChangeListener<Number> {

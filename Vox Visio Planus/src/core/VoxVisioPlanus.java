@@ -65,10 +65,10 @@ public class VoxVisioPlanus extends Application {
 
 		guiManager = new GUIManager(this);
 		
-		AudioLinearVisualizer linearSpectrum = new AudioLinearVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
+		AudioLinearVisualizer linearSpectrum = new AudioLinearVisualizer(200, 100, 500, 300, spectrumMediaPlayer, 128);
 		linearSpectrum.getEffectsKit().setStrokeRainbow();
 		
-		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
+		AudioBarVisualizer audioBarVisualizer = new AudioBarVisualizer(100, 200, 500, 300, spectrumMediaPlayer, 128);
 		audioBarVisualizer.getEffectsKit().setFillRainbow();
 		
 		AudioCircleVisualizer circleSpectrum = new AudioCircleVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);

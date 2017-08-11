@@ -106,11 +106,14 @@ public abstract class AudioSpectrumVisualizer extends Group {
 					ResizeMod.makeUnresizeable(selectedVisualizer.selectionRect);
 					DragMod.makeUndraggable(selectedVisualizer.selectionRect);
 				}
-				selectionRect.setStroke(Color.GRAY);
-				selectedVisualizer = AudioSpectrumVisualizer.this;
-				ResizeMod.makeResizable(selectedVisualizer.selectionRect);
-				DragMod.makeDraggable(selectedVisualizer.selectionRect);
-				toFront();
+				
+				if(!menu.isFullScreen()) {
+					selectionRect.setStroke(Color.GRAY);
+					selectedVisualizer = AudioSpectrumVisualizer.this;
+					ResizeMod.makeResizable(selectedVisualizer.selectionRect);
+					DragMod.makeDraggable(selectedVisualizer.selectionRect);
+					toFront();
+				}
 				event.consume();
 			}
 		});

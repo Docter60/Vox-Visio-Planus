@@ -4,6 +4,8 @@
 
 package object.visualSpectrum.mod;
 
+import java.util.HashMap;
+
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -31,6 +33,9 @@ public class DragMod {
 	};
 
 	private static final double MARGIN = 8.0;
+	
+	private static HashMap<Node, DragMod> listenerHandles = new HashMap<Node, DragMod>();
+	
 	public static enum S {
 		DEFAULT, DRAG;
 	}
@@ -41,11 +46,35 @@ public class DragMod {
 
 	private Node node;
 	private OnDragEventListener listener = defaultListener;
+	
+	private EventHandler<MouseEvent> mousePressed;
+	private EventHandler<MouseEvent> mouseDragged;
+	private EventHandler<MouseEvent> mouseReleased;
 
 	private DragMod(Node node, OnDragEventListener listener) {
 		this.node = node;
 		if (listener != null)
 			this.listener = listener;
+		
+		mousePressed = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				mousePressed(event);
+			}
+		};
+		
+		mouseDragged = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				mouseDragged(event);
+			}
+		};
+		mouseReleased = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				mouseReleased(event);
+			}
+		};
 	}
 
 	public static void makeDraggable(Node node) {
@@ -54,31 +83,19 @@ public class DragMod {
 
 	public static void makeDraggable(Node node, OnDragEventListener listener) {
 		final DragMod resizer = new DragMod(node, listener);
-
-		node.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				resizer.mousePressed(event);
-			}
-		});
-		node.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				resizer.mouseDragged(event);
-			}
-		});
-		node.setOnMouseReleased(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				resizer.mouseReleased(event);
-			}
-		});
+		node.addEventHandler(MouseEvent.MOUSE_PRESSED, resizer.mousePressed);
+		node.addEventHandler(MouseEvent.MOUSE_DRAGGED, resizer.mouseDragged);
+		node.addEventHandler(MouseEvent.MOUSE_RELEASED, resizer.mouseReleased);
+		listenerHandles.put(node, resizer);
 	}
 	
 	public static void makeUndraggable(Node node) {
-		node.setOnMousePressed(null);
-		node.setOnMouseDragged(null);
-		node.setOnMouseReleased(null);
+		if(listenerHandles.containsKey(node)) {
+			node.removeEventHandler(MouseEvent.MOUSE_PRESSED, listenerHandles.get(node).mousePressed);
+			node.removeEventHandler(MouseEvent.MOUSE_DRAGGED, listenerHandles.get(node).mouseDragged);
+			node.removeEventHandler(MouseEvent.MOUSE_RELEASED, listenerHandles.get(node).mouseReleased);
+			listenerHandles.remove(node);
+		}
 	}
 
 	protected void mouseReleased(MouseEvent event) {
