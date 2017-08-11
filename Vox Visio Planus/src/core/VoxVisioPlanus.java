@@ -5,6 +5,7 @@ package core;
 
 import java.io.File;
 
+import audio.Playlist;
 import audio.SpectrumMediaPlayer;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
@@ -74,6 +75,12 @@ public class VoxVisioPlanus extends Application {
 		circleSpectrum.getEffectsKit().setStrokeRainbow();
 
 		primaryStage.show();
+		
+		Playlist playlist = new Playlist("C:\\Users\\Docte\\Desktop\\Dance2.wpl");
+//		playlist.addSong("C:\\Users\\Docte\\Music\\09 Resonance.mp3");
+//		playlist.addSong("C:\\Users\\Docte\\Music\\09 Resonance.mp3");
+//		//playlist.removeSongAt(2);
+//		playlist.save();
 	}
 
 	public SpectrumMediaPlayer getSpectrumMediaPlayer() {
