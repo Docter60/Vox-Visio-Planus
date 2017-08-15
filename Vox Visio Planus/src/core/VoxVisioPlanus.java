@@ -72,7 +72,10 @@ public class VoxVisioPlanus extends Application {
 		audioBarVisualizer.getEffectsKit().setFillRainbow();
 		
 		AudioCircleVisualizer circleSpectrum = new AudioCircleVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
-		circleSpectrum.getEffectsKit().setStrokeRainbow();
+		circleSpectrum.getEffectsKit().setColorStrokeAll(Color.DARKRED);
+		circleSpectrum.getEffectsKit().setColorFillAll(new Color(0.05, 0.05, 0.05, 0.2));
+		circleSpectrum.getEffectsKit().setGlow(1.0);
+		circleSpectrum.getEffectsKit().setBloom(0.1);
 
 		primaryStage.show();
 		

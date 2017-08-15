@@ -18,7 +18,16 @@ public class SpectrumMediaPlayer extends AdvancedMediaPlayer {
 	public static final int THRESHOLD = -70;
 	public static final double INTERVAL = 0.01;
 	
+	private static float[] hammingWindow;
+	
 	private float[] spectrumData;
+	
+	static {
+		hammingWindow = new float[BANDS];
+		for(int i = 0; i < BANDS; i++) {
+			hammingWindow[i] = (float) (0.54 - 0.46 * Math.cos(2 * Math.PI * (i / BANDS)));
+		}
+	}
 	
 	public SpectrumMediaPlayer() {
 		super();
@@ -49,7 +58,8 @@ public class SpectrumMediaPlayer extends AdvancedMediaPlayer {
 		public void spectrumDataUpdate(double timestamp, double duration, float[] magnitudes, float[] phases) {
 			float[] spectrumData = SpectrumMediaPlayer.this.spectrumData;
 			int threshold = SpectrumMediaPlayer.this.mediaPlayer.getAudioSpectrumThreshold();
-			for (int i = 0; i < mediaPlayer.getAudioSpectrumNumBands(); i++) {
+			for (int i = 0; i < spectrumData.length; i++) {
+				//spectrumData[i] = (magnitudes[i] - threshold) * hammingWindow[i] * 10f;
 				spectrumData[i] = magnitudes[i] - threshold;
 			}
 		}

@@ -101,7 +101,7 @@ public abstract class AudioSpectrumVisualizer extends Group {
 		selectionRect.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if(selectedVisualizer != null) {
+				if(selectedVisualizer != null && event.isPrimaryButtonDown()) {
 					selectedVisualizer.selectionRect.setStroke(Color.TRANSPARENT);
 					ResizeMod.makeUnresizeable(selectedVisualizer.selectionRect);
 					DragMod.makeUndraggable(selectedVisualizer.selectionRect);

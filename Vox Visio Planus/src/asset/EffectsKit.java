@@ -1,7 +1,11 @@
 package asset;
 
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.effect.Bloom;
 import javafx.scene.effect.Glow;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
 public class EffectsKit {
@@ -13,9 +17,10 @@ public class EffectsKit {
 	private boolean isFillRainbow;
 	private boolean isStrokeRainbow;
 	
+	private double bloomValue;
 	private double glowValue;
 
-	// private Bloom bloom;
+	private Bloom bloom;
 	// private BoxBlur boxBlur;
 	private Glow glow;
 	// private MotionBlur motionBlur;
@@ -31,12 +36,16 @@ public class EffectsKit {
 
 		this.colorGradient = new ColorGradient();
 
+		this.bloom = new Bloom();
 		this.glow = new Glow();
+		
+		this.groupReference.setEffect(bloom);
 		this.groupReference.setEffect(glow);
 		
 		isFillRainbow = false;
 		isStrokeRainbow = false;
 		
+		bloomValue = 0.0;
 		glowValue = 0.0;
 	}
 
@@ -59,6 +68,22 @@ public class EffectsKit {
 		}
 		isStrokeRainbow = true;
 	}
+	
+	public void setColorStrokeAll(Color color) {
+		int elementCount = groupReference.getChildren().size();
+		for(int i = 0; i < elementCount; i++) {
+			Node node = groupReference.getChildren().get(i);
+			((Circle) node).setStroke(color);
+		}
+	}
+	
+	public void setColorFillAll(Color color) {
+		int elementCount = groupReference.getChildren().size();
+		for(int i = 0; i < elementCount; i++) {
+			Node node = groupReference.getChildren().get(i);
+			((Circle) node).setFill(color);
+		}
+	}
 
 	public void setGlow(double value) {
 		if (value > 1.0)
@@ -69,6 +94,15 @@ public class EffectsKit {
 		glowValue = value;
 	}
 	
+	public void setBloom(double value) {
+		if (value > 1.0)
+			value = 1.0;
+		if (value < 0.0)
+			value = 0.0;
+		bloom.setThreshold(value);
+		bloomValue = value;
+	}
+	
 	public void reapply() {
 		if (isFillRainbow)
 			setFillRainbow();
@@ -76,5 +110,7 @@ public class EffectsKit {
 			setStrokeRainbow();
 		if (glowValue > 0.0)
 			setGlow(glowValue);
+		if(bloomValue > 0.0)
+			setBloom(bloomValue);
 	}
 }

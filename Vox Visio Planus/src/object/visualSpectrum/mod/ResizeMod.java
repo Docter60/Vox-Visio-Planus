@@ -108,6 +108,7 @@ public class ResizeMod {
 
 	public static void makeUnresizeable(Node node) {
 		if(listenerHandles.containsKey(node)) {
+			node.setCursor(Cursor.DEFAULT);
 			node.removeEventHandler(MouseEvent.MOUSE_PRESSED, listenerHandles.get(node).mousePressed);
 			node.removeEventHandler(MouseEvent.MOUSE_DRAGGED, listenerHandles.get(node).mouseDragged);
 			node.removeEventHandler(MouseEvent.MOUSE_MOVED, listenerHandles.get(node).mouseMoved);

@@ -7,6 +7,7 @@ import audio.SpectrumMediaPlayer;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.StrokeType;
 
 /**
  * 
@@ -35,6 +36,8 @@ public class AudioCircleVisualizer extends AudioSpectrumVisualizer {
 			c.setCenterX(halfSceneWidth);
 			c.setCenterY(halfSceneHeight);
 			c.setStroke(Color.WHITE);
+			c.setStrokeType(StrokeType.CENTERED);
+			c.setStrokeWidth(3.0);
 			c.setFill(Color.TRANSPARENT);
 			elements.getChildren().add(c);
 		}
