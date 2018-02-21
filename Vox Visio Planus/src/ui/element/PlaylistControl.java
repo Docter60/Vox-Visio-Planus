@@ -27,11 +27,11 @@ public class PlaylistControl extends Group {
 	private Button swapButton;
 	private ToggleButton shuffleToggle;
 	
-	private SpectrumMediaPlayer spectrumMediaPlayer;
+	//private SpectrumMediaPlayer spectrumMediaPlayer;
 	
 	public PlaylistControl(SpectrumMediaPlayer spectrumMediaPlayer) {
 		super();
-		this.spectrumMediaPlayer = spectrumMediaPlayer;
+		//this.spectrumMediaPlayer = spectrumMediaPlayer;
 		initializeControls();
 		configureControls();
 	}

@@ -36,7 +36,7 @@ public class AudioLinearVisualizer extends AudioSpectrumVisualizer {
 			double x1 = (double) i * lineWidth + selectionRect.getLayoutX();
 			double x2 = (double) (i + 1) * lineWidth + selectionRect.getLayoutX();
 			Line line = new Line(x1, linearStartHeight, x2, linearStartHeight);
-			line.setStroke(Color.GRAY);
+			line.setStroke(Color.WHITE);
 			elements.getChildren().add(line);
 		}
 	}

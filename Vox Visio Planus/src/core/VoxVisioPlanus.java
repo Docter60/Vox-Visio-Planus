@@ -5,7 +5,6 @@ package core;
 
 import java.io.File;
 
-import audio.Playlist;
 import audio.SpectrumMediaPlayer;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
@@ -29,7 +28,7 @@ import object.visualSpectrum.AudioSpectrumVisualizer;
  * @author Docter60
  */
 public class VoxVisioPlanus extends Application {
-	public static final String INTRO = "./res/audio/VoxVisioPlanusTheme.mp3";
+	public static final String INTRO = VoxVisioPlanus.class.getResource("VoxVisioPlanusTheme.mp3").toString();
 	public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
 	public static final double STAGE_WIDTH = SCREEN_BOUNDS.getWidth() / 2.0;
 	public static final double STAGE_HEIGHT = SCREEN_BOUNDS.getHeight() / 2.0;
@@ -60,7 +59,7 @@ public class VoxVisioPlanus extends Application {
 		AudioSpectrumVisualizer.setScene(scene);
 
 		spectrumMediaPlayer = new SpectrumMediaPlayer();
-		spectrumMediaPlayer.setMedia(new Media(new File(INTRO).toURI().toString()));
+		spectrumMediaPlayer.setMedia(new Media(INTRO)); // INTRO
 		spectrumMediaPlayer.setVolume(0.8);
 
 		guiManager = new GUIManager(this);
@@ -72,14 +71,14 @@ public class VoxVisioPlanus extends Application {
 		audioBarVisualizer.getEffectsKit().setFillRainbow();
 		
 		AudioCircleVisualizer circleSpectrum = new AudioCircleVisualizer(100, 100, 500, 300, spectrumMediaPlayer, 128);
-		circleSpectrum.getEffectsKit().setColorStrokeAll(Color.DARKRED);
+		circleSpectrum.getEffectsKit().setColorStrokeAll(Color.DARKGRAY);
 		circleSpectrum.getEffectsKit().setColorFillAll(new Color(0.05, 0.05, 0.05, 0.2));
 		circleSpectrum.getEffectsKit().setGlow(1.0);
 		circleSpectrum.getEffectsKit().setBloom(0.1);
 
 		primaryStage.show();
 		
-		Playlist playlist = new Playlist("C:\\Users\\Docte\\Desktop\\Dance2.wpl");
+//		Playlist playlist = new Playlist("C:\\Users\\Docte\\Desktop\\Dance2.wpl");
 //		playlist.addSong("C:\\Users\\Docte\\Music\\09 Resonance.mp3");
 //		playlist.addSong("C:\\Users\\Docte\\Music\\09 Resonance.mp3");
 //		//playlist.removeSongAt(2);

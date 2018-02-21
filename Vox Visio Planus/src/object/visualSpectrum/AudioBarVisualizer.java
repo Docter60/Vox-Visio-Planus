@@ -39,7 +39,7 @@ public class AudioBarVisualizer extends AudioSpectrumVisualizer {
 			r.setLayoutY(middleY);
 			r.setHeight(0.0);
 			r.setWidth(barWidth);
-			r.setFill(Color.GREY);
+			r.setFill(Color.WHITE);
 			r.setStroke(Color.BLACK);
 			elements.getChildren().add(r);
 		}

@@ -12,14 +12,14 @@ import audio.SpectrumMediaPlayer;
  */
 public class AudioBarCircleVisualizer extends AudioSpectrumVisualizer {
 
-	private double barWidth;
-	private double radius;
-	private double speed;
+//	private double barWidth;
+//	private double radius;
+//	private double speed;
 	
 	public AudioBarCircleVisualizer(double x, double y, double width, double height, SpectrumMediaPlayer spectrumMediaPlayer, int barCount, double radius, double speed) {
 		super(x, y, width, height, spectrumMediaPlayer, barCount);
-		this.radius = radius;
-		this.speed = speed;
+//		this.radius = radius;
+//		this.speed = speed;
 	}
 	
 	@Override
